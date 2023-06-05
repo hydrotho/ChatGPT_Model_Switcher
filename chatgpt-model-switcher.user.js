@@ -15,82 +15,85 @@
 // ==/UserScript==
 
 (function () {
-  'use strict';
+  "use strict";
 
-  let useModelSwitcher = localStorage.getItem('useModelSwitcher') !== 'false';
-  let selectedModel = localStorage.getItem('selectedModel') || 'GPT-4 (Mobile)';
+  let useModelSwitcher = localStorage.getItem("useModelSwitcher") !== "false";
+  let selectedModel = localStorage.getItem("selectedModel") || "GPT-4 (Mobile)";
 
   const modelMapping = {
-      'GPT-3.5': 'text-davinci-002-render-sha',
-      'GPT-4': 'gpt-4',
-      'GPT-4 Web Browsing': 'gpt-4-browsing',
-      'GPT-4 Plugins': 'gpt-4-plugins',
-      'GPT-3.5 (Mobile)': 'text-davinci-002-render-sha-mobile',
-      'GPT-4 (Mobile)': 'gpt-4-mobile'
+    "GPT-3.5": "text-davinci-002-render-sha",
+    "GPT-4": "gpt-4",
+    "GPT-4 Web Browsing": "gpt-4-browsing",
+    "GPT-4 Plugins": "gpt-4-plugins",
+    "GPT-3.5 (Mobile)": "text-davinci-002-render-sha-mobile",
+    "GPT-4 (Mobile)": "gpt-4-mobile",
   };
 
   window.fetch = new Proxy(window.fetch, {
-      apply: function (target, that, args) {
-          let resource = args[0];
-          let options = args[1];
+    apply: function (target, that, args) {
+      let resource = args[0];
+      let options = args[1];
 
-          if (useModelSwitcher && resource === 'https://chat.openai.com/backend-api/conversation') {
-              const requestBody = JSON.parse(options.body);
-              requestBody.model = modelMapping[selectedModel];
-              options = {...options, body: JSON.stringify(requestBody)};
-              args[0] = resource;
-              args[1] = options;
-          }
-
-          return Reflect.apply(target, that, args);
+      if (
+        useModelSwitcher &&
+        resource === "https://chat.openai.com/backend-api/conversation"
+      ) {
+        const requestBody = JSON.parse(options.body);
+        requestBody.model = modelMapping[selectedModel];
+        options = { ...options, body: JSON.stringify(requestBody) };
+        args[0] = resource;
+        args[1] = options;
       }
+
+      return Reflect.apply(target, that, args);
+    },
   });
 
   function createSwitchElement() {
-      const switchLabel = document.createElement('label');
-      switchLabel.className = 'switch';
-      switchLabel.title = 'Check to enable the model switcher';
+    const switchLabel = document.createElement("label");
+    switchLabel.className = "switch";
+    switchLabel.title = "Check to enable the model switcher";
 
-      const switchCheckbox = document.createElement('input');
-      switchCheckbox.type = 'checkbox';
-      switchCheckbox.id = 'useModelSwitcherCheckbox';
-      switchCheckbox.checked = useModelSwitcher;
-      switchCheckbox.addEventListener('change', event => {
-          useModelSwitcher = event.target.checked;
-          localStorage.setItem('useModelSwitcher', useModelSwitcher);
-      });
+    const switchCheckbox = document.createElement("input");
+    switchCheckbox.type = "checkbox";
+    switchCheckbox.id = "useModelSwitcherCheckbox";
+    switchCheckbox.checked = useModelSwitcher;
+    switchCheckbox.addEventListener("change", (event) => {
+      useModelSwitcher = event.target.checked;
+      localStorage.setItem("useModelSwitcher", useModelSwitcher);
+    });
 
-      const switchSlider = document.createElement('span');
-      switchSlider.className = 'slider round';
+    const switchSlider = document.createElement("span");
+    switchSlider.className = "slider round";
 
-      switchLabel.appendChild(switchCheckbox);
-      switchLabel.appendChild(switchSlider);
+    switchLabel.appendChild(switchCheckbox);
+    switchLabel.appendChild(switchSlider);
 
-      return switchLabel;
+    return switchLabel;
   }
 
   function createModelSelectElement() {
-      const selectContainer = document.createElement('div');
-      selectContainer.style.position = 'relative';
+    const selectContainer = document.createElement("div");
+    selectContainer.style.position = "relative";
 
-      const select = document.createElement('select');
-      select.id = 'modelSelect';
-      select.addEventListener('change', event => {
-          selectedModel = event.target.value;
-          localStorage.setItem('selectedModel', selectedModel);
-      });
+    const select = document.createElement("select");
+    select.id = "modelSelect";
+    select.addEventListener("change", (event) => {
+      selectedModel = event.target.value;
+      localStorage.setItem("selectedModel", selectedModel);
+    });
 
-      for (const model in modelMapping) {
-          const option = document.createElement('option');
-          option.text = model;
-          option.value = model;
-          select.appendChild(option);
-      }
+    for (const model in modelMapping) {
+      const option = document.createElement("option");
+      option.text = model;
+      option.value = model;
+      select.appendChild(option);
+    }
 
-      select.value = selectedModel;
+    select.value = selectedModel;
 
-      const selectArrow = document.createElement('div');
-      selectArrow.style.cssText = `
+    const selectArrow = document.createElement("div");
+    selectArrow.style.cssText = `
     position: absolute;
     top: 50%;
     right: 8px;
@@ -103,15 +106,15 @@
     pointer-events: none;
   `;
 
-      selectContainer.appendChild(select);
-      selectContainer.appendChild(selectArrow);
+    selectContainer.appendChild(select);
+    selectContainer.appendChild(selectArrow);
 
-      return selectContainer;
+    return selectContainer;
   }
 
   function createModelSwitcherContainer() {
-      const container = document.createElement('div');
-      container.style.cssText = `
+    const container = document.createElement("div");
+    container.style.cssText = `
     position: fixed;
     top: 10px;
     right: 18px;
@@ -127,27 +130,27 @@
     opacity: 0.5;
   `;
 
-      container.addEventListener('mouseenter', () => {
-          container.style.opacity = '1';
-      });
+    container.addEventListener("mouseenter", () => {
+      container.style.opacity = "1";
+    });
 
-      container.addEventListener('mouseleave', () => {
-          container.style.opacity = '0.5';
-      });
+    container.addEventListener("mouseleave", () => {
+      container.style.opacity = "0.5";
+    });
 
-      const switchElement = createSwitchElement();
-      const modelSelectElement = createModelSelectElement();
+    const switchElement = createSwitchElement();
+    const modelSelectElement = createModelSelectElement();
 
-      container.appendChild(switchElement);
-      container.appendChild(modelSelectElement);
+    container.appendChild(switchElement);
+    container.appendChild(modelSelectElement);
 
-      return container;
+    return container;
   }
 
   const container = createModelSwitcherContainer();
   document.body.appendChild(container);
 
-  const style = document.createElement('style');
+  const style = document.createElement("style");
   style.textContent = `
   .switch {
     position: relative;
