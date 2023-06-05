@@ -14,7 +14,8 @@ ChatGPT Model Switcher 是一个用户脚本，允许用户通过启用 GPT-4 Mo
 
 要使用 GPT-4 Mobile 或其他模型，只需在 ChatGPT 网页端右上角的选项中选择所需的模型即可。
 
-![ChatGPT Model Switcher](https://github.com/hydrotho/ChatGPT_Model_Switcher/assets/42911474/c52f263a-0110-496c-b2aa-0e28c5976668)
+![ChatGPT Model Switcher](https://github.com/hydrotho/ChatGPT_Model_Switcher/assets/42911474/878f6d8f-c33d-43a5-b939-0b12017d587f)
+
 
 ## 支持
 

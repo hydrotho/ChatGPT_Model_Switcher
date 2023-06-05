@@ -14,7 +14,8 @@ ChatGPT Model Switcher is a user script that allows users to override GPT-4 usag
 
 To use the GPT-4 Mobile or other models, simply select the desired model from the options on the top-right corner of the ChatGPT web interface.
 
-![ChatGPT Model Switcher](https://github.com/hydrotho/ChatGPT_Model_Switcher/assets/42911474/c52f263a-0110-496c-b2aa-0e28c5976668)
+![ChatGPT Model Switcher](https://github.com/hydrotho/ChatGPT_Model_Switcher/assets/42911474/878f6d8f-c33d-43a5-b939-0b12017d587f)
+
 
 ## Support
 
