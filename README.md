@@ -16,6 +16,16 @@ To use the GPT-4 Mobile or other models, simply select the desired model from th
 
 ![ChatGPT Model Switcher](https://github.com/hydrotho/ChatGPT_Model_Switcher/assets/42911474/878f6d8f-c33d-43a5-b939-0b12017d587f)
 
+## Model Options
+
+| Title          | Description                                                                             | Max Tokens | Qualitative Properties                                                |
+| -------------- | ---------------------------------------------------------------                         | ---------- | --------------------------------------------------------------------- |
+| GPT-3.5        | Our fastest model, great for most everyday tasks.                                       | 8191       | Reasoning:<br>★★★☆☆<br>Speed:<br>★★★★★<br>Conciseness:<br>★★☆☆☆ |
+| GPT-3.5-Mobile | Our fastest model, great for most everyday tasks.                                       | 8191       | Reasoning:<br>★★★☆☆<br>Speed:<br>★★★★★<br>Conciseness:<br>★★☆☆☆ |
+| GPT-4          | Our most capable model, great for tasks that require creativity and advanced reasoning. | 4095       | Reasoning:<br>★★★★★<br>Speed:<br>★★☆☆☆<br>Conciseness:<br>★★★★☆ |
+| GPT-4-Plugins  | An experimental model that knows when and how to use plugins.                           | 8195       |                                                                       |
+| GPT-4-Browsing | An experimental model that knows when and how to browse the internet.                   | 4095       |                                                                       |
+| GPT-4-Mobile   | Our most capable model, great for tasks that require creativity and advanced reasoning. | 4095       | Reasoning:<br>★★★★★<br>Speed:<br>★★☆☆☆<br>Conciseness:<br>★★★★☆ |
 
 ## Support
 
