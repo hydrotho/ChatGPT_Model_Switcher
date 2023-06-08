@@ -4,6 +4,8 @@
 
 ChatGPT Model Switcher is a user script that allows users to override GPT-4 usage limits in the ChatGPT web interface by enabling the GPT-4 Mobile model. It also provides the ability to switch to other models for added flexibility.
 
+🔴 Important Notice: It is recommended not to switch models during a single conversation as it might trigger the message: "The previous model used in this conversation is unavailable. We've switched you to the latest default model," potentially leading to unforeseen repercussions.
+
 🔵 Note for Users Without a ChatGPT Plus Subscription: The script intuitively disables models that aren't accessible to you in the drop-down menu, and it conveniently defaults to the GPT-3.5 model.
 
 ## Installation
@@ -21,7 +23,7 @@ To use the GPT-4 Mobile or other models, simply select the desired model from th
 ## Model Options
 
 | Title          | Description                                                                             | Max Tokens | Qualitative Properties                                                |
-| -------------- | ---------------------------------------------------------------                         | ---------- | --------------------------------------------------------------------- |
+| -------------- | --------------------------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------- |
 | GPT-3.5        | Our fastest model, great for most everyday tasks.                                       | 8191       | Reasoning:<br>★★★☆☆<br>Speed:<br>★★★★★<br>Conciseness:<br>★★☆☆☆ |
 | GPT-3.5-Mobile | Our fastest model, great for most everyday tasks.                                       | 8191       | Reasoning:<br>★★★☆☆<br>Speed:<br>★★★★★<br>Conciseness:<br>★★☆☆☆ |
 | GPT-4          | Our most capable model, great for tasks that require creativity and advanced reasoning. | 4095       | Reasoning:<br>★★★★★<br>Speed:<br>★★☆☆☆<br>Conciseness:<br>★★★★☆ |
