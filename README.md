@@ -37,4 +37,4 @@ If you encounter any issues or have any suggestions, please [open an issue](http
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License, see the [LICENSE](LICENSE) file for details.

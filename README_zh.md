@@ -35,6 +35,6 @@ ChatGPT Model Switcher 是一个用户脚本，允许用户通过启用 GPT-4 Mo
 
 如果您遇到任何问题或有任何建议，欢迎 [提出问题](https://github.com/hydrotho/ChatGPT_Model_Switcher/issues)。
 
-## 许可
+## 许可证
 
-本项目使用 MIT 许可。详情请查阅 [LICENSE](LICENSE)
+本项目采用 MIT 许可证，详情请参见 [LICENSE](LICENSE) 文件。
