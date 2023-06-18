@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name              ChatGPT Model Switcher (Supports GPT-4 Mobile)
-// @name:zh-CN        ChatGPT 模型切换器（支持 GPT-4 Mobile）
-// @name:zh-TW        ChatGPT 模型切换器（支持 GPT-4 Mobile）
+// @name              ChatGPT Model Switcher (Supports GPT-4 Mobile and All Available Models)
+// @name:zh-CN        ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
+// @name:zh-TW        ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
 // @namespace         https://github.com/hydrotho/ChatGPT_Model_Switcher
 // @copyright         2023, Hydrotho (https://github.com/hydrotho)
 // @version           1.0.1
