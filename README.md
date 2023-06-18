@@ -2,7 +2,7 @@
 
 [English](README.md) | [中文](README_zh.md)
 
-ChatGPT Model Switcher is a user script that allows users to override GPT-4 usage limits in the ChatGPT web interface by enabling the GPT-4 Mobile model. It also provides the ability to switch to other models for added flexibility.
+ChatGPT Model Switcher is a user script that allows users to override GPT-4 usage limits in the ChatGPT web interface by enabling the GPT-4 Mobile model. It also provides the ability to switch to other models for added flexibility. Generally, this script does not conflict with other popular ChatGPT scripts.
 
 🔴 Important Notice: It is recommended not to switch models during a single conversation as it might trigger the message: "The previous model used in this conversation is unavailable. We've switched you to the latest default model," potentially leading to unforeseen repercussions.
 

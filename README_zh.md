@@ -2,7 +2,7 @@
 
 [English](README.md) | [中文](README_zh.md)
 
-ChatGPT Model Switcher 是一个用户脚本，允许用户通过启用 GPT-4 Mobile 模型，来解除 ChatGPT 网页端对 GPT-4 模型使用次数的限制。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。
+ChatGPT Model Switcher 是一个用户脚本，允许用户通过启用 GPT-4 Mobile 模型，来解除 ChatGPT 网页端对 GPT-4 模型使用次数的限制。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。
 
 🔴 重要提醒：我们建议您在同一次对话中避免切换模型。这样做可能会触发以下信息：“The previous model used in this conversation is unavailable. We've switched you to the latest default model.” 这可能会导致未预见的结果。
 
