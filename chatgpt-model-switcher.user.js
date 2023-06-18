@@ -12,6 +12,7 @@
 // @updateURL      https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/chatgpt-model-switcher.user.js
 // @downloadURL    https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/chatgpt-model-switcher.user.js
 // @supportURL     https://github.com/hydrotho/ChatGPT_Model_Switcher/issues
+// @license        MIT
 // ==/UserScript==
 
 (function () {
