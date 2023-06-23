@@ -33,8 +33,20 @@
     "GPT-4 (Mobile)": "gpt-4-mobile",
   };
 
+  const arkoseTokenBda = btoa(JSON.stringify({ ct: "", iv: "", s: "" }));
+  const arkoseTokenPublicKey = "35536E1E-65B4-4D96-9D97-6ADB7EFF8147";
+  const arkoseTokenSite = "https://chat.openai.com";
+  const arkoseTokenUserBrowser =
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.43";
+  const arkoseTokenCapiVersion = "1.5.2";
+  const arkoseTokenCapiMode = "lightbox";
+  const arkoseTokenStyleTheme = "default";
+  const arkoseTokenRnd = Math.random().toFixed(17);
+  const arkoseTokenUrl =
+    "https://tcr9i.chat.openai.com/fc/gt2/public_key/" + arkoseTokenPublicKey;
+
   window.fetch = new Proxy(window.fetch, {
-    apply: function (target, that, args) {
+    apply: async function (target, that, args) {
       let resource = args[0];
       let options = args[1];
 
@@ -44,6 +56,40 @@
       ) {
         const requestBody = JSON.parse(options.body);
         requestBody.model = modelMapping[selectedModel];
+
+        if (
+          requestBody.model.startsWith("gpt-4") &&
+          requestBody.arkose_token === null
+        ) {
+          const formParams = new URLSearchParams();
+          formParams.append("bda", arkoseTokenBda);
+          formParams.append("public_key", arkoseTokenPublicKey);
+          formParams.append("site", arkoseTokenSite);
+          formParams.append("userbrowser", arkoseTokenUserBrowser);
+          formParams.append("capi_version", arkoseTokenCapiVersion);
+          formParams.append("capi_mode", arkoseTokenCapiMode);
+          formParams.append("style_theme", arkoseTokenStyleTheme);
+          formParams.append("rnd", arkoseTokenRnd);
+
+          try {
+            const response = await fetch(arkoseTokenUrl, {
+              method: "POST",
+              headers: {
+                "Content-Type":
+                  "application/x-www-form-urlencoded; charset=UTF-8",
+              },
+              body: formParams,
+            });
+            if (response.ok) {
+              const data = await response.json();
+              requestBody.arkose_token = data.token;
+            }
+          } catch (error) {
+            console.error("Error occurred when fetching ArkoseToken.", error);
+            return Promise.reject(error);
+          }
+        }
+
         options = { ...options, body: JSON.stringify(requestBody) };
         args[0] = resource;
         args[1] = options;
