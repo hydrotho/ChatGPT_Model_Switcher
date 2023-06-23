@@ -4,7 +4,7 @@
 // @name:zh-TW        ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
 // @namespace         https://github.com/hydrotho/ChatGPT_Model_Switcher
 // @copyright         2023, Hydrotho (https://github.com/hydrotho)
-// @version           1.0.1
+// @version           1.0.2
 // @description       Override GPT-4 usage limits in the ChatGPT web interface by enabling the GPT-4 Mobile model. Additional models can also be enabled for switching, providing more flexibility. Generally, this script does not conflict with other popular ChatGPT scripts.
 // @description:zh-CN 通过启用 GPT-4 Mobile 模型，解除 ChatGPT 网页端对 GPT-4 模型使用次数的限制。同时还可启用其他模型进行切换，提供更多的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。
 // @description:zh-TW 通过启用 GPT-4 Mobile 模型，解除 ChatGPT 网页端对 GPT-4 模型使用次数的限制。同时还可启用其他模型进行切换，提供更多的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。
