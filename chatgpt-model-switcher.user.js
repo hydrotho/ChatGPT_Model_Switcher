@@ -88,6 +88,11 @@
             console.error("Error occurred when fetching ArkoseToken.", error);
             return Promise.reject(error);
           }
+        } else if (
+          requestBody.model.startsWith("text-davinci-002-render-sha") &&
+          requestBody.arkose_token !== null
+        ) {
+          requestBody.arkose_token = null;
         }
 
         options = { ...options, body: JSON.stringify(requestBody) };
