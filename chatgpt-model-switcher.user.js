@@ -37,7 +37,7 @@
   const arkoseTokenPublicKey = "35536E1E-65B4-4D96-9D97-6ADB7EFF8147";
   const arkoseTokenSite = "https://chat.openai.com";
   const arkoseTokenUserBrowser =
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.43";
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.58";
   const arkoseTokenCapiVersion = "1.5.2";
   const arkoseTokenCapiMode = "lightbox";
   const arkoseTokenStyleTheme = "default";
