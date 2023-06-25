@@ -8,6 +8,7 @@ ChatGPT Model Switcher is a user script that allows users to override GPT-4 usag
 
 🔵 Note for Users Without a ChatGPT Plus Subscription: The script intuitively disables models that aren't accessible to you in the drop-down menu, and it conveniently defaults to the GPT-3.5 model.
 
+⚠️ Update 2023.06.25: ChatGPT is currently enhancing its authentication mechanism. If you encounter the following error message during use: "Our systems have detected unusual activity from your system. Please try again later." Please [open an issue](https://github.com/hydrotho/ChatGPT_Model_Switcher/issues).
 ## Installation
 
 1. Install a user script manager, such as [Tampermonkey](https://www.tampermonkey.net/).

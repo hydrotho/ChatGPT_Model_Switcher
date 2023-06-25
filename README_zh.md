@@ -8,6 +8,8 @@ ChatGPT 模型切换器是一个用户脚本，允许用户通过启用 GPT-4 Mo
 
 🔵 对于无 ChatGPT Plus 订阅的用户的注意事项：脚本会自动禁用下拉菜单中对您不可用的模型，并默认选择 GPT-3.5 模型。
 
+⚠️ 2023.06.25 更新：ChatGPT 目前正在加强验证机制。如果您在使用过程中遇到以下错误信息：“Our systems have detected unusual activity from your system. Please try again later.” 欢迎 [提出问题](https://github.com/hydrotho/ChatGPT_Model_Switcher/issues)。
+
 ## 安装
 
 1. 安装一个用户脚本管理器，如 [Tampermonkey](https://www.tampermonkey.net/)。
