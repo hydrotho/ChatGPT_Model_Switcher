@@ -33,86 +33,23 @@
     "GPT-4 (Mobile)": "gpt-4-mobile",
   };
 
-  const arkoseTokenBda = btoa(JSON.stringify({ ct: "", iv: "", s: "" }));
-  const arkoseTokenPublicKey = "35536E1E-65B4-4D96-9D97-6ADB7EFF8147";
-  const arkoseTokenSite = "https://chat.openai.com";
-  const arkoseTokenUserBrowser =
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.58";
-  const arkoseTokenCapiVersion = "1.5.2";
-  const arkoseTokenCapiMode = "lightbox";
-  const arkoseTokenStyleTheme = "default";
-  const arkoseTokenRnd = Math.random().toFixed(17);
-  const arkoseTokenUrl =
-    "https://tcr9i.chat.openai.com/fc/gt2/public_key/" + arkoseTokenPublicKey;
-
   const CONVERSATION_API_URL =
     "https://chat.openai.com/backend-api/conversation";
   const MODELS_API_URL =
     "https://chat.openai.com/backend-api/models?history_and_training_disabled=false";
+  const ARKOSE_TOKEN_URL = "https://ai.fakeopen.com/api/arkose/token";
 
-  async function getArkoseParams(timeout = 5000) {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
-
+  async function getArkoseToken() {
     try {
-      const response = await fetch(
-        "https://ai.fakeopen.com/api/arkose/params",
-        {
-          signal: controller.signal,
-        }
-      );
-
-      clearTimeout(id);
-
-      if (response.ok) {
-        return await response.json();
-      } else {
-        throw new Error(
-          "Arkose params fetch failed with status: " + response.status
-        );
-      }
-    } catch (error) {
-      console.error(
-        "Failed to fetch Arkose params from remote server, using local fallback.",
-        error
-      );
-      return {
-        bda: arkoseTokenBda,
-        public_key: arkoseTokenPublicKey,
-        site: arkoseTokenSite,
-        userbrowser: arkoseTokenUserBrowser,
-        capi_version: arkoseTokenCapiVersion,
-        capi_mode: arkoseTokenCapiMode,
-        style_theme: arkoseTokenStyleTheme,
-        rnd: arkoseTokenRnd,
-      };
-    }
-  }
-
-  async function getArkoseToken(params) {
-    const formParams = new URLSearchParams(params);
-    try {
-      const response = await fetch(arkoseTokenUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-        body: formParams,
-      });
-
+      const response = await fetch(ARKOSE_TOKEN_URL);
       if (response.ok) {
         const data = await response.json();
         return data.token;
       } else {
-        throw new Error(
-          "Arkose token fetch failed with status: " + response.status
-        );
+        throw new Error("Unable to fetch arkose_token: HTTP " + response.status);
       }
     } catch (error) {
-      console.error(
-        "Failed to fetch Arkose token using given parameters.",
-        error
-      );
+      console.error("Error encountered while fetching arkose_token: ", error);
       return null;
     }
   }
@@ -130,8 +67,7 @@
           requestBody.model.startsWith("gpt-4") &&
           requestBody.arkose_token === null
         ) {
-          const arkoseParams = await getArkoseParams();
-          requestBody.arkose_token = await getArkoseToken(arkoseParams);
+          requestBody.arkose_token = await getArkoseToken();
         } else if (
           requestBody.model.startsWith("text-davinci-002-render-sha") &&
           requestBody.arkose_token !== null
