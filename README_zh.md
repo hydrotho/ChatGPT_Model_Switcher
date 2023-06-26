@@ -10,6 +10,8 @@ ChatGPT 模型切换器是一个用户脚本，允许用户通过启用 GPT-4 Mo
 
 ⚠️ 2023.06.25 更新：ChatGPT 目前正在加强验证机制。如果您在使用过程中遇到以下错误信息：“Our systems have detected unusual activity from your system. Please try again later.” 欢迎 [提出问题](https://github.com/hydrotho/ChatGPT_Model_Switcher/issues)。
 
+⚠️ 2023.06.26 更新：ChatGPT 已对 GPT-4 Mobile 模型设置使用额度上限。如果你在使用网页端，可能会看到：“You've reached the current usage cap for GPT-4. You can continue with the default model now, or try again after XXX.” 的提示。如果你在使用 iOS 端，可能会看到：“You have sent too many messages to the model. Please try again later.” 的提示。
+
 ## 安装
 
 1. 安装一个用户脚本管理器，如 [Tampermonkey](https://www.tampermonkey.net/)。
