@@ -123,6 +123,34 @@
     }
   }
 
+  async function handleModelsApiUrlResponse(fetchPromise) {
+    return fetchPromise.then((response) => {
+      if (response.ok) {
+        response
+          .clone()
+          .json()
+          .then((data) => {
+            const accessibleModels = data.models.map((model) => model.slug);
+            Object.keys(modelMapping).forEach((model) => {
+              const mappedSlug = modelMapping[model];
+              const selectOption = document.querySelector(
+                `#modelSelect option[value="${model}"]`
+              );
+              if (selectOption && !accessibleModels.includes(mappedSlug)) {
+                selectOption.disabled = true;
+                if (selectedModel === model) {
+                  selectedModel = "GPT-3.5";
+                  localStorage.setItem("selectedModel", selectedModel);
+                  document.querySelector("#modelSelect").value = selectedModel;
+                }
+              }
+            });
+          });
+      }
+      return response;
+    });
+  }
+
   window.fetch = new Proxy(window.fetch, {
     apply: async function (target, that, args) {
       let resource = args[0];
@@ -152,33 +180,9 @@
       const fetchPromise = Reflect.apply(target, that, args);
 
       if (resource.includes(MODELS_API_URL)) {
-        return fetchPromise.then((response) => {
-          if (response.ok) {
-            response
-              .clone()
-              .json()
-              .then((data) => {
-                const accessibleModels = data.models.map((model) => model.slug);
-                Object.keys(modelMapping).forEach((model) => {
-                  const mappedSlug = modelMapping[model];
-                  const selectOption = document.querySelector(
-                    `#modelSelect option[value="${model}"]`
-                  );
-                  if (selectOption && !accessibleModels.includes(mappedSlug)) {
-                    selectOption.disabled = true;
-                    if (selectedModel === model) {
-                      selectedModel = "GPT-3.5";
-                      localStorage.setItem("selectedModel", selectedModel);
-                      document.querySelector("#modelSelect").value =
-                        selectedModel;
-                    }
-                  }
-                });
-              });
-          }
-          return response;
-        });
+        return handleModelsApiUrlResponse(fetchPromise);
       }
+
       return fetchPromise;
     },
   });
