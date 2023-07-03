@@ -38,18 +38,6 @@
   const MODELS_API_URL =
     "https://chat.openai.com/backend-api/models?history_and_training_disabled=false";
   const ARKOSE_TOKEN_URL = "https://ai.fakeopen.com/api/arkose/token";
-  const ARKOSE_PARAMS_URL = "https://ai.fakeopen.com/api/arkose/params";
-
-  const arkoseTokenBda = btoa(JSON.stringify({ ct: "", iv: "", s: "" }));
-  const arkoseTokenPublicKey = "35536E1E-65B4-4D96-9D97-6ADB7EFF8147";
-  const arkoseTokenSite = "https://chat.openai.com";
-  const arkoseTokenUserBrowser = navigator.userAgent;
-  const arkoseTokenCapiVersion = "1.5.2";
-  const arkoseTokenCapiMode = "lightbox";
-  const arkoseTokenStyleTheme = "default";
-  const arkoseTokenRnd = Math.random().toFixed(17);
-  const arkoseTokenUrl =
-    "https://tcr9i.chat.openai.com/fc/gt2/public_key/" + arkoseTokenPublicKey;
 
   async function getArkoseToken() {
     try {
@@ -67,58 +55,6 @@
         "Error encountered while fetching arkose_token directly: ",
         error
       );
-      return await getArkoseTokenFallback();
-    }
-  }
-
-  async function getArkoseParams() {
-    try {
-      const response = await fetch(ARKOSE_PARAMS_URL);
-      if (response.ok) {
-        return await response.json();
-      } else {
-        throw new Error(
-          "Unable to fetch Arkose params: HTTP " + response.status
-        );
-      }
-    } catch (error) {
-      console.error("Error encountered while fetching Arkose params: ", error);
-      console.info("Use local fallback!");
-      return {
-        bda: arkoseTokenBda,
-        public_key: arkoseTokenPublicKey,
-        site: arkoseTokenSite,
-        userbrowser: arkoseTokenUserBrowser,
-        capi_version: arkoseTokenCapiVersion,
-        capi_mode: arkoseTokenCapiMode,
-        style_theme: arkoseTokenStyleTheme,
-        rnd: arkoseTokenRnd,
-      };
-    }
-  }
-
-  async function getArkoseTokenFallback(params) {
-    const arkoseParams = await getArkoseParams();
-    const formParams = new URLSearchParams(arkoseParams);
-    try {
-      const response = await fetch(arkoseTokenUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-        body: formParams,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return data.token;
-      } else {
-        throw new Error(
-          "Unable to fetch arkose_token: HTTP " + response.status
-        );
-      }
-    } catch (error) {
-      console.error("Error encountered while fetching arkose_token: ", error);
       return null;
     }
   }
