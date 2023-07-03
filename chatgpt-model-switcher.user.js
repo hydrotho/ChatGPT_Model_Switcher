@@ -37,26 +37,38 @@
     "https://chat.openai.com/backend-api/conversation";
   const MODELS_API_URL =
     "https://chat.openai.com/backend-api/models?history_and_training_disabled=false";
-  const ARKOSE_TOKEN_URL = "https://ai.fakeopen.com/api/arkose/token";
+
+  const ARKOSE_TOKEN_URLS = [
+    "https://ai.fakeopen.com/api/arkose/token",
+    "https://arkose-token.tms.im"
+  ];
 
   async function getArkoseToken() {
-    try {
-      const response = await fetch(ARKOSE_TOKEN_URL);
-      if (response.ok) {
-        const data = await response.json();
-        return data.token;
-      } else {
-        throw new Error(
-          "Unable to fetch arkose_token directly: HTTP " + response.status
+    const urls = [...ARKOSE_TOKEN_URLS];
+    while (urls.length > 0) {
+      const randomIndex = Math.floor(Math.random() * urls.length);
+      const url = urls.splice(randomIndex, 1)[0];
+
+      try {
+        const response = await fetch(url);
+        if (response.ok) {
+          const data = await response.json();
+          if (data && "token" in data) {
+            return data.token;
+          } else {
+            throw new Error("Token not present in response.");
+          }
+        }
+      } catch (error) {
+        console.error(
+          `Error encountered while fetching arkose_token from ${url}: `,
+          error
         );
       }
-    } catch (error) {
-      console.error(
-        "Error encountered while fetching arkose_token directly: ",
-        error
-      );
-      return null;
     }
+
+    console.error("Failed to fetch arkose_token from all URLs.");
+    return null;
   }
 
   async function handleModelsApiUrlResponse(fetchPromise) {
