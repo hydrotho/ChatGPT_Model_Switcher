@@ -27,6 +27,7 @@
   const modelMapping = {
     "GPT-3.5": "text-davinci-002-render-sha",
     "GPT-4": "gpt-4",
+    "GPT-4 Code Interpreter": "gpt-4-code-interpreter",
     "GPT-4 Web Browsing": "gpt-4-browsing",
     "GPT-4 Plugins": "gpt-4-plugins",
     "GPT-3.5 (Mobile)": "text-davinci-002-render-sha-mobile",
