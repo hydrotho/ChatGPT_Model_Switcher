@@ -26,14 +26,15 @@ To use the GPT-4 Mobile or other models, simply select the desired model from th
 
 ## Model Options
 
-| Title          | Description                                                                             | Max Tokens | Qualitative Properties                                                |
-| -------------- | --------------------------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------- |
-| GPT-3.5        | Our fastest model, great for most everyday tasks.                                       | 8191       | Reasoning:<br>★★★☆☆<br>Speed:<br>★★★★★<br>Conciseness:<br>★★☆☆☆ |
-| GPT-3.5-Mobile | Our fastest model, great for most everyday tasks.                                       | 8191       | Reasoning:<br>★★★☆☆<br>Speed:<br>★★★★★<br>Conciseness:<br>★★☆☆☆ |
-| GPT-4          | Our most capable model, great for tasks that require creativity and advanced reasoning. | 4095       | Reasoning:<br>★★★★★<br>Speed:<br>★★☆☆☆<br>Conciseness:<br>★★★★☆ |
-| GPT-4-Plugins  | An experimental model that knows when and how to use plugins.                           | 8195       |                                                                       |
-| GPT-4-Browsing | An experimental model that knows when and how to browse the internet.                   | 4095       |                                                                       |
-| GPT-4-Mobile   | Our most capable model, great for tasks that require creativity and advanced reasoning. | 4095       | Reasoning:<br>★★★★★<br>Speed:<br>★★☆☆☆<br>Conciseness:<br>★★★★☆ |
+| Title                  | Description                                                                                                                                                                                                              | Max Tokens | Qualitative Properties                                                |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | --------------------------------------------------------------------- |
+| GPT-3.5                | Our fastest model, great for most everyday tasks.                                                                                                                                                                        | 8191       | Reasoning:<br>★★★☆☆<br>Speed:<br>★★★★★<br>Conciseness:<br>★★☆☆☆ |
+| GPT-3.5-Mobile         | Our fastest model, great for most everyday tasks.                                                                                                                                                                        | 8191       | Reasoning:<br>★★★☆☆<br>Speed:<br>★★★★★<br>Conciseness:<br>★★☆☆☆ |
+| GPT-4                  | Our most capable model, great for tasks that require creativity and advanced reasoning.                                                                                                                                  | 4095       | Reasoning:<br>★★★★★<br>Speed:<br>★★☆☆☆<br>Conciseness:<br>★★★★☆ |
+| GPT-4-Code-Interpreter | An experimental model that can solve tasks by generating Python code and executing it in a Jupyter notebook. You can upload any kind of file, and ask model to analyse it, or produce a new file which you can download. | 8192       |                                                                       |
+| GPT-4-Plugins          | An experimental model that knows when and how to use plugins.                                                                                                                                                            | 8192       |                                                                       |
+| GPT-4-Browsing         | An experimental model that knows when and how to browse the internet.                                                                                                                                                    | 4095       |                                                                       |
+| GPT-4-Mobile           | Our most capable model, great for tasks that require creativity and advanced reasoning.                                                                                                                                  | 4095       | Reasoning:<br>★★★★★<br>Speed:<br>★★☆☆☆<br>Conciseness:<br>★★★★☆ |
 
 ## Support
 
