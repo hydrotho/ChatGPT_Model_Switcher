@@ -73,29 +73,36 @@
   }
 
   async function handleModelsApiUrlResponse(fetchPromise) {
-    return fetchPromise.then((response) => {
-      if (response.ok) {
-        response
-          .clone()
-          .json()
-          .then((data) => {
-            const accessibleModels = data.models.map((model) => model.slug);
-            Object.keys(modelMapping).forEach((model) => {
-              const mappedSlug = modelMapping[model];
-              const selectOption = document.querySelector(
-                `#modelSelect option[value="${model}"]`
-              );
-              if (selectOption && !accessibleModels.includes(mappedSlug)) {
-                selectOption.disabled = true;
-                if (selectedModel === model) {
-                  selectedModel = "GPT-3.5";
-                  localStorage.setItem("selectedModel", selectedModel);
-                  document.querySelector("#modelSelect").value = selectedModel;
-                }
-              }
-            });
-          });
+    const handleModel = (model, condition = true) => {
+      const selectOption = document.querySelector(
+        `#modelSelect option[value="${model}"]`
+      );
+
+      if (selectOption && !condition) {
+        selectOption.disabled = true;
+        if (selectedModel === model) {
+          selectedModel = "GPT-3.5";
+          localStorage.setItem("selectedModel", selectedModel);
+          document.querySelector("#modelSelect").value = selectedModel;
+        }
       }
+    };
+
+    return fetchPromise.then(async (response) => {
+      if (response.ok) {
+        const data = await response.clone().json();
+        const accessibleModels = data.models.map((model) => model.slug);
+
+        handleModel("GPT-3.5 (Mobile)", true);
+        handleModel("GPT-4 (Mobile)", accessibleModels.includes("gpt-4"));
+
+        for (const [model, mappedSlug] of Object.entries(modelMapping)) {
+          if (!model.endsWith("(Mobile)")) {
+            handleModel(model, accessibleModels.includes(mappedSlug));
+          }
+        }
+      }
+
       return response;
     });
   }
