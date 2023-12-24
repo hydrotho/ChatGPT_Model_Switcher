@@ -2,39 +2,25 @@
 
 [English](README.md) | [中文](README_zh.md)
 
-ChatGPT 模型切换器是一个用户脚本，允许用户通过启用 GPT-4 Mobile 模型，来解除 ChatGPT 网页端对 GPT-4 模型使用次数的限制。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。
+ChatGPT 模型切换器是一个用户脚本，允许用户通过启用 GPT-4 Mobile 模型，~~来解除 ChatGPT 网页端对 GPT-4 模型使用次数的限制~~。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。
 
 🔴 重要提醒：我们建议您在同一次对话中避免切换模型。这样做可能会触发以下信息：“The previous model used in this conversation is unavailable. We've switched you to the latest default model.” 这可能会导致未预见的结果。
 
-🔵 对于无 ChatGPT Plus 订阅的用户的注意事项：脚本会自动禁用下拉菜单中对您不可用的模型，并默认选择 GPT-3.5 模型。
+🔵 对于无 ChatGPT Plus 订阅的用户的注意事项：脚本会自动隐藏下拉菜单中对您不可用的模型。
 
-⚠️ 2023.06.25 更新：ChatGPT 目前正在加强验证机制。如果您在使用过程中遇到以下错误信息：“Our systems have detected unusual activity from your system. Please try again later.” 欢迎 [提出问题](https://github.com/hydrotho/ChatGPT_Model_Switcher/issues)。
-
-⚠️ 2023.06.26 更新：ChatGPT 已对 GPT-4 Mobile 模型设置使用额度上限。如果你在使用网页端，可能会看到：“You've reached the current usage cap for GPT-4. You can continue with the default model now, or try again after XXX.” 的提示。如果你在使用 iOS 端，可能会看到：“You have sent too many messages to the model. Please try again later.” 的提示。
+⚠️ 2023.12.25 更新：ChatGPT 已加强验证机制，您在使用过程中可能会遇到以下错误信息：“Our systems have detected unusual activity from your system. Please try again later.”
 
 ## 安装
 
 1. 安装一个用户脚本管理器，如 [Tampermonkey](https://www.tampermonkey.net/)。
-2. 点击 [此处](https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/chatgpt-model-switcher.user.js) 安装脚本。
+2. 点击 [此处](https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/dist/chatgpt-model-switcher.user.js) 安装脚本。
 3. 安装后，访问 [ChatGPT](https://chat.openai.com/)，即可使用 "ChatGPT 模型切换器" 愉快地体验 GPT-4 Mobile 模型！
 
 ## 使用
 
 要使用 GPT-4 Mobile 或其他模型，只需在 ChatGPT 网页端右上角的选项中选择所需的模型即可。
 
-![ChatGPT 模型切换器](https://github.com/hydrotho/ChatGPT_Model_Switcher/assets/42911474/878f6d8f-c33d-43a5-b939-0b12017d587f)
-
-## 模型选项
-
-| 模型名称               | 描述                                                                                                                                                           | 最大 Tokens | 质量特性                                                          |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ----------------------------------------------------------------- |
-| GPT-3.5                | 我们最快的模型，适用于大多数日常任务。                                                                                                                         | 8191        | 推理能力：<br>★★★☆☆<br>速度：<br>★★★★★<br>简洁性：<br>★★☆☆☆ |
-| GPT-3.5-Mobile         | 我们最快的模型，适用于大多数日常任务。                                                                                                                         | 8191        | 推理能力：<br>★★★☆☆<br>速度：<br>★★★★★<br>简洁性：<br>★★☆☆☆ |
-| GPT-4                  | 我们最强大的模型，适用于需要创造力和高级推理的任务。                                                                                                           | 4095        | 推理能力：<br>★★★★★<br>速度：<br>★★☆☆☆<br>简洁性：<br>★★★★☆ |
-| GPT-4-Code-Interpreter | 一个实验性的模型，能通过生成 Python 代码并在 Jupyter Notebook 中执行来解决任务。你可以上传任何类型的文件，并请求模型进行分析，或者生成一个你可以下载的新文件。 | 8192        |                                                                   |
-| GPT-4-Plugins          | 一个实验性模型，知道何时以及如何使用插件。                                                                                                                     | 8192        |                                                                   |
-| GPT-4-Browsing         | 一个实验性模型，知道何时以及如何浏览互联网。                                                                                                                   | 4095        |                                                                   |
-| GPT-4-Mobile           | 我们最强大的模型，适用于需要创造力和高级推理的任务。                                                                                                           | 4095        | 推理能力：<br>★★★★★<br>速度：<br>★★☆☆☆<br>简洁性：<br>★★★★☆ |
+![ChatGPT 模型切换器](https://github.com/hydrotho/ChatGPT_Model_Switcher/assets/42911474/6d4b77d7-47ce-4e85-9a34-521c30409304)
 
 ## 支持
 
