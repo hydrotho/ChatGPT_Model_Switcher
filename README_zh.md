@@ -2,13 +2,15 @@
 
 [English](README.md) | [中文](README_zh.md)
 
-ChatGPT 模型切换器是一个用户脚本，允许用户通过启用 GPT-4 Mobile 模型，~~来解除 ChatGPT 网页端对 GPT-4 模型使用次数的限制~~。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。
+ChatGPT 模型切换器是一个用户脚本，允许用户在 ChatGPT 网页端使用 GPT-4 Mobile 模型。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。
 
 🔴 重要提醒：我们建议您在同一次对话中避免切换模型。这样做可能会触发以下信息：“The previous model used in this conversation is unavailable. We've switched you to the latest default model.” 这可能会导致未预见的结果。
 
 🔵 对于无 ChatGPT Plus 订阅的用户的注意事项：脚本会自动隐藏下拉菜单中对您不可用的模型。
 
 ⚠️ 2023.12.25 更新：ChatGPT 已加强验证机制，您在使用过程中可能会遇到以下错误信息：“Our systems have detected unusual activity from your system. Please try again later.”
+
+⚠️ 2023.12.31 更新：ChatGPT 的产品化愈加完善，OpenAI 加入了更加严格的限制。同时，由于个人工作原因，没有太多时间和精力维护，本项目将不再保证能够解除 ChatGPT 网页端对 GPT-4 模型使用次数的限制。如果您有能力，欢迎您为本项目贡献代码。
 
 ## 安装
 

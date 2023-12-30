@@ -21,11 +21,11 @@ export default defineConfig({
         copyright: '2023, Hydrotho (https://github.com/hydrotho)',
         version: '2.0.0',
         description: {
-          '': 'Enable the GPT-4 Mobile model, ~~thereby overriding GPT-4 usage limits in the ChatGPT web interface~~. It also provides the ability to switch to other models for added flexibility. Generally, this script does not conflict with other popular ChatGPT scripts.',
+          '': 'Use the GPT-4 Mobile model on the ChatGPT web interface. It also provides the ability to switch to other models for added flexibility. Generally, this script does not conflict with other popular ChatGPT scripts.',
           'zh-CN':
-            '通过启用 GPT-4 Mobile 模型，~~来解除 ChatGPT 网页端对 GPT-4 模型使用次数的限制~~。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。',
+            '在 ChatGPT 网页端使用 GPT-4 Mobile 模型。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。',
           'zh-TW':
-            '通过启用 GPT-4 Mobile 模型，~~来解除 ChatGPT 网页端对 GPT-4 模型使用次数的限制~~。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。'
+            '在 ChatGPT 网页端使用 GPT-4 Mobile 模型。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。'
         },
         icon: (() => {
           const image = readFileSync(

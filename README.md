@@ -2,13 +2,15 @@
 
 [English](README.md) | [中文](README_zh.md)
 
-ChatGPT Model Switcher is a user script that allows users to enable the GPT-4 Mobile model, ~~thereby overriding GPT-4 usage limits in the ChatGPT web interface~~. It also provides the ability to switch to other models for added flexibility. Generally, this script does not conflict with other popular ChatGPT scripts.
+ChatGPT Model Switcher is a user script that allows users to use the GPT-4 Mobile model on the ChatGPT web interface. It also provides the ability to switch to other models for added flexibility. Generally, this script does not conflict with other popular ChatGPT scripts.
 
 🔴 Important Notice: It is recommended not to switch models during a single conversation as it might trigger the message: "The previous model used in this conversation is unavailable. We've switched you to the latest default model," potentially leading to unforeseen repercussions.
 
 🔵 Note for Users Without a ChatGPT Plus Subscription: The script automatically hides models that aren't accessible to you in the drop-down menu.
 
 ⚠️ Update 2023.12.25: ChatGPT has enhanced its authentication mechanism. You may encounter the following error message during use: "Our systems have detected unusual activity from your system. Please try again later."
+
+⚠️ Update 2023.12.31: As ChatGPT becomes more productized, OpenAI has implemented stricter limitations. Also, due to personal work commitments and limited time and energy, this project can no longer guarantee to override the usage limits of the GPT-4 model on the ChatGPT web interface. If you are capable, you are welcome to contribute to this project.
 
 ## Installation
 
