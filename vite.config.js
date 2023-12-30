@@ -19,7 +19,7 @@ export default defineConfig({
         },
         namespace: 'https://github.com/hydrotho/ChatGPT_Model_Switcher',
         copyright: '2023, Hydrotho (https://github.com/hydrotho)',
-        version: '2.0.0',
+        version: '2.0.1',
         description: {
           '': 'Use the GPT-4 Mobile model on the ChatGPT web interface. It also provides the ability to switch to other models for added flexibility. Generally, this script does not conflict with other popular ChatGPT scripts.',
           'zh-CN':
