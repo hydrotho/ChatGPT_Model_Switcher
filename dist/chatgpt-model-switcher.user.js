@@ -3,7 +3,7 @@
 // @name:zh-CN         ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
 // @name:zh-TW         ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
 // @namespace          https://github.com/hydrotho/ChatGPT_Model_Switcher
-// @version            2.0.1
+// @version            2.0.2
 // @author             Hydrotho
 // @description        Use the GPT-4 Mobile model on the ChatGPT web interface. It also provides the ability to switch to other models for added flexibility. Generally, this script does not conflict with other popular ChatGPT scripts.
 // @description:zh-CN  在 ChatGPT 网页端使用 GPT-4 Mobile 模型。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。
@@ -2101,12 +2101,12 @@
           vue.createVNode(vue.unref(Switch), {
             modelValue: vue.unref(state).isEnabled,
             "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => vue.unref(state).isEnabled = $event),
-            class: vue.normalizeClass([vue.unref(state).isEnabled ? "bg-green-600" : "bg-gray-200", "cursor-pointer relative shrink-0 rounded-full h-[25px] w-[42px]"])
+            class: vue.normalizeClass([vue.unref(state).isEnabled ? "bg-green-600" : "bg-gray-200", "cursor-pointer relative shrink-0 rounded-full h-[20px] w-[32px]"])
           }, {
             default: vue.withCtx(() => [
               vue.createElementVNode("span", {
-                style: vue.normalizeStyle(vue.unref(state).isEnabled ? "transform: translateX(19px)" : "transform: translateX(0.125rem)"),
-                class: "flex items-center justify-center rounded-full transition-transform duration-100 will-change-transform bg-white shadow-[0_1px_2px_rgba(0,0,0,0.45)] h-[21px] w-[21px]"
+                style: vue.normalizeStyle(vue.unref(state).isEnabled ? "transform: translateX(14px)" : "transform: translateX(0.125rem)"),
+                class: "flex items-center justify-center rounded-full transition-transform duration-100 will-change-transform bg-white shadow-[0_1px_2px_rgba(0,0,0,0.45)] h-[16px] w-[16px]"
               }, null, 4)
             ]),
             _: 1
