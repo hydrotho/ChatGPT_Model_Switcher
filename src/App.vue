@@ -48,11 +48,11 @@ onMounted(async () => {
   <Switch
     v-model="state.isEnabled"
     :class="state.isEnabled ? 'bg-green-600' : 'bg-gray-200'"
-    class="cursor-pointer relative shrink-0 rounded-full h-[25px] w-[42px]"
+    class="cursor-pointer relative shrink-0 rounded-full h-[20px] w-[32px]"
   >
     <span
-      :style="state.isEnabled ? 'transform: translateX(19px)' : 'transform: translateX(0.125rem)'"
-      class="flex items-center justify-center rounded-full transition-transform duration-100 will-change-transform bg-white shadow-[0_1px_2px_rgba(0,0,0,0.45)] h-[21px] w-[21px]"
+      :style="state.isEnabled ? 'transform: translateX(14px)' : 'transform: translateX(0.125rem)'"
+      class="flex items-center justify-center rounded-full transition-transform duration-100 will-change-transform bg-white shadow-[0_1px_2px_rgba(0,0,0,0.45)] h-[16px] w-[16px]"
     ></span>
   </Switch>
   <Popover class="relative">
