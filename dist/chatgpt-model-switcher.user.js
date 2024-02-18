@@ -3,7 +3,7 @@
 // @name:zh-CN         ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
 // @name:zh-TW         ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
 // @namespace          https://github.com/hydrotho/ChatGPT_Model_Switcher
-// @version            2.0.2
+// @version            2.0.3
 // @author             Hydrotho
 // @description        Use the GPT-4 Mobile model on the ChatGPT web interface. It also provides the ability to switch to other models for added flexibility. Generally, this script does not conflict with other popular ChatGPT scripts.
 // @description:zh-CN  在 ChatGPT 网页端使用 GPT-4 Mobile 模型。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。
@@ -15,7 +15,7 @@
 // @downloadURL        https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/dist/chatgpt-model-switcher.user.js
 // @updateURL          https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/dist/chatgpt-model-switcher.user.js
 // @match              http*://chat.openai.com/*
-// @require            https://cdn.jsdelivr.net/npm/vue@3.3.13/dist/vue.global.prod.js
+// @require            https://cdn.jsdelivr.net/npm/vue@3.3.13/dist/vue.global.prod.js#sha256-LShY2Ao8yAutuUyKoWGaTRS9Ers3sKr2kFa6hhX8m40=
 // @grant              none
 // ==/UserScript==
 
