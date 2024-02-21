@@ -15,11 +15,11 @@ function mountApp(mountPoint) {
   }
 
   const rootContainer = document.createElement('div')
-  rootContainer.className = 'flex gap-2 pr-1 items-center'
+  rootContainer.className = 'flex items-center gap-2'
   rootContainer.id = 'chatgpt-model-switcher'
 
   const wrapper = document.createElement('div')
-  wrapper.className = 'flex items-center gap-2'
+  wrapper.className = 'flex gap-2 pr-1'
   wrapper.appendChild(rootContainer)
   wrapper.appendChild(mountPoint.removeChild(mountPoint.lastChild))
 

@@ -57,7 +57,7 @@ onMounted(async () => {
   </Switch>
   <Popover class="relative">
     <PopoverButton
-      class="group flex cursor-pointer items-center gap-1 rounded-xl py-2 px-3 text-lg font-medium hover:bg-gray-50 radix-state-open:bg-gray-50 dark:hover:bg-black/10 dark:radix-state-open:bg-black/20"
+      class="group flex cursor-pointer items-center gap-1 rounded-xl py-2 px-3 text-lg font-medium hover:bg-token-main-surface-secondary"
     >
       ChatGPT Model Switcher
       <ChevronDownIcon class="text-token-text-tertiary"></ChevronDownIcon>
@@ -75,7 +75,7 @@ onMounted(async () => {
         leave-to-class="translate-y-1 opacity-0"
       >
         <PopoverPanel
-          class="mt-2 min-w-[340px] max-w-xs overflow-hidden rounded-lg border border-gray-100 bg-token-surface-primary shadow-lg dark:border-gray-700"
+          class="popover mt-2 min-w-[340px] max-w-xs overflow-hidden rounded-lg border border-token-border-light bg-token-main-surface-primary shadow-lg"
           :style="stylePopoverPanel"
         >
           <template v-for="(group, index) in groupedModels">

@@ -1,11 +1,11 @@
 <template>
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
-      d="M2.16479 10.0003C2.16479 5.67409 5.6719 2.16699 9.99813 2.16699C14.3244 2.16699 17.8315 5.67409 17.8315 10.0003C17.8315 14.3266 14.3244 17.8337 9.99813 17.8337C5.6719 17.8337 2.16479 14.3266 2.16479 10.0003Z"
-      stroke="currentColor"
-      stroke-opacity="0.16"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2ZM0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10Z"
+      fill="currentColor"
+      opacity="0.16"
     ></path>
   </svg>
 </template>

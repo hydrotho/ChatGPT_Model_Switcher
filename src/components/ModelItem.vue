@@ -20,7 +20,8 @@ defineProps({
 
 <template>
   <div
-    class="flex gap-2 m-1.5 rounded p-2.5 text-sm cursor-pointer focus:ring-0 hover:bg-black/5 dark:hover:bg-white/5 radix-disabled:pointer-events-none radix-disabled:opacity-50 group !pr-3 !opacity-100"
+    class="flex gap-2 m-1.5 rounded p-2.5 text-sm cursor-pointer focus:ring-0 hover:bg-token-main-surface-secondary radix-disabled:pointer-events-none radix-disabled:opacity-50 group !pr-3"
+    :class="{ '!opacity-100': isSelected }"
   >
     <div class="flex grow items-center justify-between gap-2">
       <div>
@@ -33,7 +34,7 @@ defineProps({
       </div>
       <component
         :is="isSelected ? CircleCheckIcon : CircleIcon"
-        class="icon-md block shrink-0"
+        class="icon-md flex-shrink-0"
       ></component>
     </div>
   </div>
