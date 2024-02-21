@@ -22,7 +22,7 @@ ChatGPT 模型切换器是一个用户脚本，允许用户在 ChatGPT 网页端
 
 要使用 GPT-4 Mobile 或其他模型，只需在 ChatGPT 网页端右上角的选项中选择所需的模型即可。
 
-![ChatGPT 模型切换器](https://github.com/hydrotho/ChatGPT_Model_Switcher/assets/42911474/6d4b77d7-47ce-4e85-9a34-521c30409304)
+![ChatGPT 模型切换器](https://github.com/hydrotho/ChatGPT_Model_Switcher/assets/42911474/75ef5379-b5e4-45ff-8f90-286cfa291881)
 
 ## 支持
 
