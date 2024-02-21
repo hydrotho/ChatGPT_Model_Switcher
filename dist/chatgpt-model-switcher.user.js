@@ -3,7 +3,7 @@
 // @name:zh-CN         ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
 // @name:zh-TW         ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
 // @namespace          https://github.com/hydrotho/ChatGPT_Model_Switcher
-// @version            2.0.3
+// @version            2.1.0
 // @author             Hydrotho
 // @description        Use the GPT-4 Mobile model on the ChatGPT web interface. It also provides the ability to switch to other models for added flexibility. Generally, this script does not conflict with other popular ChatGPT scripts.
 // @description:zh-CN  在 ChatGPT 网页端使用 GPT-4 Mobile 模型。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。
@@ -15,13 +15,48 @@
 // @downloadURL        https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/dist/chatgpt-model-switcher.user.js
 // @updateURL          https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/dist/chatgpt-model-switcher.user.js
 // @match              http*://chat.openai.com/*
-// @require            https://cdn.jsdelivr.net/npm/vue@3.3.13/dist/vue.global.prod.js#sha256-LShY2Ao8yAutuUyKoWGaTRS9Ers3sKr2kFa6hhX8m40=
+// @require            https://cdn.jsdelivr.net/npm/vue@3.4.19/dist/vue.global.prod.js#sha256-4yDa4p89hBgm4cwPC4fx7t8+QOEjjKFWYp9jpIsCsgM=
 // @grant              none
 // ==/UserScript==
 
 (function (vue) {
   'use strict';
 
+  function useControllable(controlledValue, onChange, defaultValue) {
+    let internalValue = vue.ref(defaultValue == null ? void 0 : defaultValue.value);
+    let isControlled = vue.computed(() => controlledValue.value !== void 0);
+    return [
+      vue.computed(() => isControlled.value ? controlledValue.value : internalValue.value),
+      function(value) {
+        if (isControlled.value) {
+          return onChange == null ? void 0 : onChange(value);
+        } else {
+          internalValue.value = value;
+          return onChange == null ? void 0 : onChange(value);
+        }
+      }
+    ];
+  }
+  let GENERATE_ID = Symbol("headlessui.useid");
+  let globalId = 0;
+  function useId() {
+    let generateId = vue.inject(GENERATE_ID, () => {
+      return `${++globalId}`;
+    });
+    return generateId();
+  }
+  function dom(ref2) {
+    var _a;
+    if (ref2 == null)
+      return null;
+    if (ref2.value == null)
+      return null;
+    let el = (_a = ref2.value.$el) != null ? _a : ref2.value;
+    if (el instanceof Node) {
+      return el;
+    }
+    return null;
+  }
   function match(value, lookup, ...args) {
     if (value in lookup) {
       let returnValue = lookup[value];
@@ -35,264 +70,6 @@
     if (Error.captureStackTrace)
       Error.captureStackTrace(error, match);
     throw error;
-  }
-  var Features$1 = /* @__PURE__ */ ((Features2) => {
-    Features2[Features2["None"] = 0] = "None";
-    Features2[Features2["RenderStrategy"] = 1] = "RenderStrategy";
-    Features2[Features2["Static"] = 2] = "Static";
-    return Features2;
-  })(Features$1 || {});
-  function render({
-    visible = true,
-    features = 0,
-    ourProps,
-    theirProps,
-    ...main
-  }) {
-    var _a;
-    let props = mergeProps(theirProps, ourProps);
-    let mainWithProps = Object.assign(main, { props });
-    if (visible)
-      return _render(mainWithProps);
-    if (features & 2) {
-      if (props.static)
-        return _render(mainWithProps);
-    }
-    if (features & 1) {
-      let strategy = ((_a = props.unmount) != null ? _a : true) ? 0 : 1;
-      return match(strategy, {
-        [
-          0
-          /* Unmount */
-        ]() {
-          return null;
-        },
-        [
-          1
-          /* Hidden */
-        ]() {
-          return _render({
-            ...main,
-            props: { ...props, hidden: true, style: { display: "none" } }
-          });
-        }
-      });
-    }
-    return _render(mainWithProps);
-  }
-  function _render({
-    props,
-    attrs,
-    slots,
-    slot,
-    name
-  }) {
-    var _a, _b;
-    let { as, ...incomingProps } = omit(props, ["unmount", "static"]);
-    let children = (_a = slots.default) == null ? void 0 : _a.call(slots, slot);
-    let dataAttributes = {};
-    if (slot) {
-      let exposeState = false;
-      let states = [];
-      for (let [k, v] of Object.entries(slot)) {
-        if (typeof v === "boolean") {
-          exposeState = true;
-        }
-        if (v === true) {
-          states.push(k);
-        }
-      }
-      if (exposeState)
-        dataAttributes[`data-headlessui-state`] = states.join(" ");
-    }
-    if (as === "template") {
-      children = flattenFragments(children != null ? children : []);
-      if (Object.keys(incomingProps).length > 0 || Object.keys(attrs).length > 0) {
-        let [firstChild, ...other] = children != null ? children : [];
-        if (!isValidElement(firstChild) || other.length > 0) {
-          throw new Error(
-            [
-              'Passing props on "template"!',
-              "",
-              `The current component <${name} /> is rendering a "template".`,
-              `However we need to passthrough the following props:`,
-              Object.keys(incomingProps).concat(Object.keys(attrs)).map((name2) => name2.trim()).filter((current, idx, all) => all.indexOf(current) === idx).sort((a, z) => a.localeCompare(z)).map((line) => `  - ${line}`).join("\n"),
-              "",
-              "You can apply a few solutions:",
-              [
-                'Add an `as="..."` prop, to ensure that we render an actual element instead of a "template".',
-                "Render a single element as the child so that we can forward the props onto that element."
-              ].map((line) => `  - ${line}`).join("\n")
-            ].join("\n")
-          );
-        }
-        let mergedProps = mergeProps((_b = firstChild.props) != null ? _b : {}, incomingProps);
-        let cloned = vue.cloneVNode(firstChild, mergedProps);
-        for (let prop in mergedProps) {
-          if (prop.startsWith("on")) {
-            cloned.props || (cloned.props = {});
-            cloned.props[prop] = mergedProps[prop];
-          }
-        }
-        return cloned;
-      }
-      if (Array.isArray(children) && children.length === 1) {
-        return children[0];
-      }
-      return children;
-    }
-    return vue.h(as, Object.assign({}, incomingProps, dataAttributes), {
-      default: () => children
-    });
-  }
-  function flattenFragments(children) {
-    return children.flatMap((child) => {
-      if (child.type === vue.Fragment) {
-        return flattenFragments(child.children);
-      }
-      return [child];
-    });
-  }
-  function mergeProps(...listOfProps) {
-    var _a;
-    if (listOfProps.length === 0)
-      return {};
-    if (listOfProps.length === 1)
-      return listOfProps[0];
-    let target = {};
-    let eventHandlers = {};
-    for (let props of listOfProps) {
-      for (let prop in props) {
-        if (prop.startsWith("on") && typeof props[prop] === "function") {
-          (_a = eventHandlers[prop]) != null ? _a : eventHandlers[prop] = [];
-          eventHandlers[prop].push(props[prop]);
-        } else {
-          target[prop] = props[prop];
-        }
-      }
-    }
-    if (target.disabled || target["aria-disabled"]) {
-      return Object.assign(
-        target,
-        // Set all event listeners that we collected to `undefined`. This is
-        // important because of the `cloneElement` from above, which merges the
-        // existing and new props, they don't just override therefore we have to
-        // explicitly nullify them.
-        Object.fromEntries(Object.keys(eventHandlers).map((eventName) => [eventName, void 0]))
-      );
-    }
-    for (let eventName in eventHandlers) {
-      Object.assign(target, {
-        [eventName](event, ...args) {
-          let handlers = eventHandlers[eventName];
-          for (let handler of handlers) {
-            if (event instanceof Event && event.defaultPrevented) {
-              return;
-            }
-            handler(event, ...args);
-          }
-        }
-      });
-    }
-    return target;
-  }
-  function compact(object) {
-    let clone = Object.assign({}, object);
-    for (let key in clone) {
-      if (clone[key] === void 0)
-        delete clone[key];
-    }
-    return clone;
-  }
-  function omit(object, keysToOmit = []) {
-    let clone = Object.assign({}, object);
-    for (let key of keysToOmit) {
-      if (key in clone)
-        delete clone[key];
-    }
-    return clone;
-  }
-  function isValidElement(input) {
-    if (input == null)
-      return false;
-    if (typeof input.type === "string")
-      return true;
-    if (typeof input.type === "object")
-      return true;
-    if (typeof input.type === "function")
-      return true;
-    return false;
-  }
-  let id = 0;
-  function generateId() {
-    return ++id;
-  }
-  function useId() {
-    return generateId();
-  }
-  var Keys = /* @__PURE__ */ ((Keys2) => {
-    Keys2["Space"] = " ";
-    Keys2["Enter"] = "Enter";
-    Keys2["Escape"] = "Escape";
-    Keys2["Backspace"] = "Backspace";
-    Keys2["Delete"] = "Delete";
-    Keys2["ArrowLeft"] = "ArrowLeft";
-    Keys2["ArrowUp"] = "ArrowUp";
-    Keys2["ArrowRight"] = "ArrowRight";
-    Keys2["ArrowDown"] = "ArrowDown";
-    Keys2["Home"] = "Home";
-    Keys2["End"] = "End";
-    Keys2["PageUp"] = "PageUp";
-    Keys2["PageDown"] = "PageDown";
-    Keys2["Tab"] = "Tab";
-    return Keys2;
-  })(Keys || {});
-  function dom(ref2) {
-    var _a;
-    if (ref2 == null)
-      return null;
-    if (ref2.value == null)
-      return null;
-    return (_a = ref2.value.$el) != null ? _a : ref2.value;
-  }
-  let Context = Symbol("Context");
-  var State = /* @__PURE__ */ ((State2) => {
-    State2[State2["Open"] = 1] = "Open";
-    State2[State2["Closed"] = 2] = "Closed";
-    State2[State2["Closing"] = 4] = "Closing";
-    State2[State2["Opening"] = 8] = "Opening";
-    return State2;
-  })(State || {});
-  function useOpenClosed() {
-    return vue.inject(Context, null);
-  }
-  function useOpenClosedProvider(value) {
-    vue.provide(Context, value);
-  }
-  function resolveType(type, as) {
-    if (type)
-      return type;
-    let tag = as != null ? as : "button";
-    if (typeof tag === "string" && tag.toLowerCase() === "button")
-      return "button";
-    return void 0;
-  }
-  function useResolveButtonType(data, refElement) {
-    let type = vue.ref(resolveType(data.value.type, data.value.as));
-    vue.onMounted(() => {
-      type.value = resolveType(data.value.type, data.value.as);
-    });
-    vue.watchEffect(() => {
-      var _a;
-      if (type.value)
-        return;
-      if (!dom(refElement))
-        return;
-      if (dom(refElement) instanceof HTMLButtonElement && !((_a = dom(refElement)) == null ? void 0 : _a.hasAttribute("type"))) {
-        type.value = "button";
-      }
-    });
-    return type;
   }
   var __defProp = Object.defineProperty;
   var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -507,6 +284,21 @@
     }
     return 2;
   }
+  function isIOS() {
+    return (
+      // Check if it is an iPhone
+      /iPhone/gi.test(window.navigator.platform) || // Check if it is an iPad. iPad reports itself as "MacIntel", but we can check if it is a touch
+      // screen. Let's hope that Apple doesn't release a touch screen Mac (or maybe this would then
+      // work as expected 🤔).
+      /Mac/gi.test(window.navigator.platform) && window.navigator.maxTouchPoints > 0
+    );
+  }
+  function isAndroid() {
+    return /Android/gi.test(window.navigator.userAgent);
+  }
+  function isMobile() {
+    return isIOS() || isAndroid();
+  }
   function useDocumentEvent(type, listener, options) {
     if (env.isServer)
       return;
@@ -596,6 +388,9 @@
     useDocumentEvent(
       "click",
       (event) => {
+        if (isMobile()) {
+          return;
+        }
         if (!initialClickTarget.value) {
           return;
         }
@@ -636,6 +431,218 @@
       true
     );
   }
+  function resolveType(type, as) {
+    if (type)
+      return type;
+    let tag = as != null ? as : "button";
+    if (typeof tag === "string" && tag.toLowerCase() === "button")
+      return "button";
+    return void 0;
+  }
+  function useResolveButtonType(data, refElement) {
+    let type = vue.ref(resolveType(data.value.type, data.value.as));
+    vue.onMounted(() => {
+      type.value = resolveType(data.value.type, data.value.as);
+    });
+    vue.watchEffect(() => {
+      var _a;
+      if (type.value)
+        return;
+      if (!dom(refElement))
+        return;
+      if (dom(refElement) instanceof HTMLButtonElement && !((_a = dom(refElement)) == null ? void 0 : _a.hasAttribute("type"))) {
+        type.value = "button";
+      }
+    });
+    return type;
+  }
+  var Features$1 = /* @__PURE__ */ ((Features2) => {
+    Features2[Features2["None"] = 0] = "None";
+    Features2[Features2["RenderStrategy"] = 1] = "RenderStrategy";
+    Features2[Features2["Static"] = 2] = "Static";
+    return Features2;
+  })(Features$1 || {});
+  function render({
+    visible = true,
+    features = 0,
+    ourProps,
+    theirProps,
+    ...main
+  }) {
+    var _a;
+    let props = mergeProps(theirProps, ourProps);
+    let mainWithProps = Object.assign(main, { props });
+    if (visible)
+      return _render(mainWithProps);
+    if (features & 2) {
+      if (props.static)
+        return _render(mainWithProps);
+    }
+    if (features & 1) {
+      let strategy = ((_a = props.unmount) != null ? _a : true) ? 0 : 1;
+      return match(strategy, {
+        [
+          0
+          /* Unmount */
+        ]() {
+          return null;
+        },
+        [
+          1
+          /* Hidden */
+        ]() {
+          return _render({
+            ...main,
+            props: { ...props, hidden: true, style: { display: "none" } }
+          });
+        }
+      });
+    }
+    return _render(mainWithProps);
+  }
+  function _render({
+    props,
+    attrs,
+    slots,
+    slot,
+    name
+  }) {
+    var _a, _b;
+    let { as, ...incomingProps } = omit(props, ["unmount", "static"]);
+    let children = (_a = slots.default) == null ? void 0 : _a.call(slots, slot);
+    let dataAttributes = {};
+    if (slot) {
+      let exposeState = false;
+      let states = [];
+      for (let [k, v] of Object.entries(slot)) {
+        if (typeof v === "boolean") {
+          exposeState = true;
+        }
+        if (v === true) {
+          states.push(k);
+        }
+      }
+      if (exposeState)
+        dataAttributes[`data-headlessui-state`] = states.join(" ");
+    }
+    if (as === "template") {
+      children = flattenFragments(children != null ? children : []);
+      if (Object.keys(incomingProps).length > 0 || Object.keys(attrs).length > 0) {
+        let [firstChild, ...other] = children != null ? children : [];
+        if (!isValidElement(firstChild) || other.length > 0) {
+          throw new Error(
+            [
+              'Passing props on "template"!',
+              "",
+              `The current component <${name} /> is rendering a "template".`,
+              `However we need to passthrough the following props:`,
+              Object.keys(incomingProps).concat(Object.keys(attrs)).map((name2) => name2.trim()).filter((current, idx, all) => all.indexOf(current) === idx).sort((a, z) => a.localeCompare(z)).map((line) => `  - ${line}`).join("\n"),
+              "",
+              "You can apply a few solutions:",
+              [
+                'Add an `as="..."` prop, to ensure that we render an actual element instead of a "template".',
+                "Render a single element as the child so that we can forward the props onto that element."
+              ].map((line) => `  - ${line}`).join("\n")
+            ].join("\n")
+          );
+        }
+        let mergedProps = mergeProps((_b = firstChild.props) != null ? _b : {}, incomingProps, dataAttributes);
+        let cloned = vue.cloneVNode(firstChild, mergedProps, true);
+        for (let prop in mergedProps) {
+          if (prop.startsWith("on")) {
+            cloned.props || (cloned.props = {});
+            cloned.props[prop] = mergedProps[prop];
+          }
+        }
+        return cloned;
+      }
+      if (Array.isArray(children) && children.length === 1) {
+        return children[0];
+      }
+      return children;
+    }
+    return vue.h(as, Object.assign({}, incomingProps, dataAttributes), {
+      default: () => children
+    });
+  }
+  function flattenFragments(children) {
+    return children.flatMap((child) => {
+      if (child.type === vue.Fragment) {
+        return flattenFragments(child.children);
+      }
+      return [child];
+    });
+  }
+  function mergeProps(...listOfProps) {
+    var _a;
+    if (listOfProps.length === 0)
+      return {};
+    if (listOfProps.length === 1)
+      return listOfProps[0];
+    let target = {};
+    let eventHandlers = {};
+    for (let props of listOfProps) {
+      for (let prop in props) {
+        if (prop.startsWith("on") && typeof props[prop] === "function") {
+          (_a = eventHandlers[prop]) != null ? _a : eventHandlers[prop] = [];
+          eventHandlers[prop].push(props[prop]);
+        } else {
+          target[prop] = props[prop];
+        }
+      }
+    }
+    if (target.disabled || target["aria-disabled"]) {
+      return Object.assign(
+        target,
+        // Set all event listeners that we collected to `undefined`. This is
+        // important because of the `cloneElement` from above, which merges the
+        // existing and new props, they don't just override therefore we have to
+        // explicitly nullify them.
+        Object.fromEntries(Object.keys(eventHandlers).map((eventName) => [eventName, void 0]))
+      );
+    }
+    for (let eventName in eventHandlers) {
+      Object.assign(target, {
+        [eventName](event, ...args) {
+          let handlers = eventHandlers[eventName];
+          for (let handler of handlers) {
+            if (event instanceof Event && event.defaultPrevented) {
+              return;
+            }
+            handler(event, ...args);
+          }
+        }
+      });
+    }
+    return target;
+  }
+  function compact(object) {
+    let clone = Object.assign({}, object);
+    for (let key in clone) {
+      if (clone[key] === void 0)
+        delete clone[key];
+    }
+    return clone;
+  }
+  function omit(object, keysToOmit = []) {
+    let clone = Object.assign({}, object);
+    for (let key of keysToOmit) {
+      if (key in clone)
+        delete clone[key];
+    }
+    return clone;
+  }
+  function isValidElement(input) {
+    if (input == null)
+      return false;
+    if (typeof input.type === "string")
+      return true;
+    if (typeof input.type === "object")
+      return true;
+    if (typeof input.type === "function")
+      return true;
+    return false;
+  }
   var Features = /* @__PURE__ */ ((Features2) => {
     Features2[Features2["None"] = 1] = "None";
     Features2[Features2["Focusable"] = 2] = "Focusable";
@@ -654,9 +661,13 @@
     },
     setup(props, { slots, attrs }) {
       return () => {
+        var _a;
         let { features, ...theirProps } = props;
         let ourProps = {
-          "aria-hidden": (features & 2) === 2 ? true : void 0,
+          "aria-hidden": (features & 2) === 2 ? true : (
+            // @ts-ignore
+            (_a = theirProps["aria-hidden"]) != null ? _a : void 0
+          ),
           style: {
             position: "fixed",
             top: 1,
@@ -683,6 +694,37 @@
       };
     }
   });
+  let Context = Symbol("Context");
+  var State = /* @__PURE__ */ ((State2) => {
+    State2[State2["Open"] = 1] = "Open";
+    State2[State2["Closed"] = 2] = "Closed";
+    State2[State2["Closing"] = 4] = "Closing";
+    State2[State2["Opening"] = 8] = "Opening";
+    return State2;
+  })(State || {});
+  function useOpenClosed() {
+    return vue.inject(Context, null);
+  }
+  function useOpenClosedProvider(value) {
+    vue.provide(Context, value);
+  }
+  var Keys = /* @__PURE__ */ ((Keys2) => {
+    Keys2["Space"] = " ";
+    Keys2["Enter"] = "Enter";
+    Keys2["Escape"] = "Escape";
+    Keys2["Backspace"] = "Backspace";
+    Keys2["Delete"] = "Delete";
+    Keys2["ArrowLeft"] = "ArrowLeft";
+    Keys2["ArrowUp"] = "ArrowUp";
+    Keys2["ArrowRight"] = "ArrowRight";
+    Keys2["ArrowDown"] = "ArrowDown";
+    Keys2["Home"] = "Home";
+    Keys2["End"] = "End";
+    Keys2["PageUp"] = "PageUp";
+    Keys2["PageDown"] = "PageDown";
+    Keys2["Tab"] = "Tab";
+    return Keys2;
+  })(Keys || {});
   function attemptSubmit(elementInForm) {
     var _a, _b;
     let form = (_a = elementInForm == null ? void 0 : elementInForm.form) != null ? _a : elementInForm.closest("form");
@@ -698,20 +740,14 @@
     }
     (_b = form.requestSubmit) == null ? void 0 : _b.call(form);
   }
-  function useControllable(controlledValue, onChange, defaultValue) {
-    let internalValue = vue.ref(defaultValue == null ? void 0 : defaultValue.value);
-    let isControlled = vue.computed(() => controlledValue.value !== void 0);
-    return [
-      vue.computed(() => isControlled.value ? controlledValue.value : internalValue.value),
-      function(value) {
-        if (isControlled.value) {
-          return onChange == null ? void 0 : onChange(value);
-        } else {
-          internalValue.value = value;
-          return onChange == null ? void 0 : onChange(value);
-        }
-      }
-    ];
+  function useEventListener(element, type, listener, options) {
+    if (env.isServer)
+      return;
+    vue.watchEffect((onInvalidate) => {
+      element = element != null ? element : window;
+      element.addEventListener(type, listener, options);
+      onInvalidate(() => element.removeEventListener(type, listener, options));
+    });
   }
   var Direction = /* @__PURE__ */ ((Direction2) => {
     Direction2[Direction2["Forwards"] = 0] = "Forwards";
@@ -730,14 +766,70 @@
     });
     return direction;
   }
-  function useEventListener(element, type, listener, options) {
-    if (env.isServer)
-      return;
-    vue.watchEffect((onInvalidate) => {
-      element = element != null ? element : window;
-      element.addEventListener(type, listener, options);
-      onInvalidate(() => element.removeEventListener(type, listener, options));
-    });
+  function useRootContainers({
+    defaultContainers = [],
+    portals,
+    mainTreeNodeRef: _mainTreeNodeRef
+  } = {}) {
+    let mainTreeNodeRef = vue.ref(null);
+    let ownerDocument = getOwnerDocument(mainTreeNodeRef);
+    function resolveContainers() {
+      var _a, _b, _c;
+      let containers = [];
+      for (let container of defaultContainers) {
+        if (container === null)
+          continue;
+        if (container instanceof HTMLElement) {
+          containers.push(container);
+        } else if ("value" in container && container.value instanceof HTMLElement) {
+          containers.push(container.value);
+        }
+      }
+      if (portals == null ? void 0 : portals.value) {
+        for (let portal of portals.value) {
+          containers.push(portal);
+        }
+      }
+      for (let container of (_a = ownerDocument == null ? void 0 : ownerDocument.querySelectorAll("html > *, body > *")) != null ? _a : []) {
+        if (container === document.body)
+          continue;
+        if (container === document.head)
+          continue;
+        if (!(container instanceof HTMLElement))
+          continue;
+        if (container.id === "headlessui-portal-root")
+          continue;
+        if (container.contains(dom(mainTreeNodeRef)))
+          continue;
+        if (container.contains((_c = (_b = dom(mainTreeNodeRef)) == null ? void 0 : _b.getRootNode()) == null ? void 0 : _c.host))
+          continue;
+        if (containers.some((defaultContainer) => container.contains(defaultContainer)))
+          continue;
+        containers.push(container);
+      }
+      return containers;
+    }
+    return {
+      resolveContainers,
+      contains(element) {
+        return resolveContainers().some((container) => container.contains(element));
+      },
+      mainTreeNodeRef,
+      MainTreeNode() {
+        if (_mainTreeNodeRef != null)
+          return null;
+        return vue.h(Hidden, { features: Features.Hidden, ref: mainTreeNodeRef });
+      }
+    };
+  }
+  function useMainTreeNode() {
+    let mainTreeNodeRef = vue.ref(null);
+    return {
+      mainTreeNodeRef,
+      MainTreeNode() {
+        return vue.h(Hidden, { features: Features.Hidden, ref: mainTreeNodeRef });
+      }
+    };
   }
   let ForcePortalRootContext = Symbol("ForcePortalRootContext");
   function usePortalRoot() {
@@ -760,6 +852,66 @@
           slots,
           attrs,
           name: "ForcePortalRoot"
+        });
+      };
+    }
+  });
+  let DescriptionContext = Symbol("DescriptionContext");
+  function useDescriptionContext() {
+    let context = vue.inject(DescriptionContext, null);
+    if (context === null) {
+      throw new Error("Missing parent");
+    }
+    return context;
+  }
+  function useDescriptions({
+    slot = vue.ref({}),
+    name = "Description",
+    props = {}
+  } = {}) {
+    let descriptionIds = vue.ref([]);
+    function register(value) {
+      descriptionIds.value.push(value);
+      return () => {
+        let idx = descriptionIds.value.indexOf(value);
+        if (idx === -1)
+          return;
+        descriptionIds.value.splice(idx, 1);
+      };
+    }
+    vue.provide(DescriptionContext, { register, slot, name, props });
+    return vue.computed(
+      () => descriptionIds.value.length > 0 ? descriptionIds.value.join(" ") : void 0
+    );
+  }
+  vue.defineComponent({
+    name: "Description",
+    props: {
+      as: { type: [Object, String], default: "p" },
+      id: { type: String, default: null }
+    },
+    setup(myProps, { attrs, slots }) {
+      var _a;
+      let id = (_a = myProps.id) != null ? _a : `headlessui-description-${useId()}`;
+      let context = useDescriptionContext();
+      vue.onMounted(() => vue.onUnmounted(context.register(id)));
+      return () => {
+        let { name = "Description", slot = vue.ref({}), props = {} } = context;
+        let { ...theirProps } = myProps;
+        let ourProps = {
+          ...Object.entries(props).reduce(
+            (acc, [key, value]) => Object.assign(acc, { [key]: vue.unref(value) }),
+            {}
+          ),
+          id
+        };
+        return render({
+          ourProps,
+          theirProps,
+          slot: slot.value,
+          attrs,
+          slots,
+          name
         });
       };
     }
@@ -794,6 +946,10 @@
       let myTarget = vue.ref(
         forcePortalRoot === true ? getPortalRoot(element.value) : groupContext == null ? getPortalRoot(element.value) : groupContext.resolveTarget()
       );
+      let ready = vue.ref(false);
+      vue.onMounted(() => {
+        ready.value = true;
+      });
       vue.watchEffect(() => {
         if (forcePortalRoot)
           return;
@@ -802,13 +958,18 @@
         myTarget.value = groupContext.resolveTarget();
       });
       let parent = vue.inject(PortalParentContext, null);
-      vue.onMounted(() => {
-        let domElement = dom(element);
-        if (!domElement)
+      let didRegister = false;
+      let instance = vue.getCurrentInstance();
+      vue.watch(element, () => {
+        if (didRegister)
           return;
         if (!parent)
           return;
-        vue.onUnmounted(parent.register(domElement));
+        let domElement = dom(element);
+        if (!domElement)
+          return;
+        vue.onUnmounted(parent.register(domElement), instance);
+        didRegister = true;
       });
       vue.onUnmounted(() => {
         var _a, _b;
@@ -822,6 +983,8 @@
         }
       });
       return () => {
+        if (!ready.value)
+          return null;
         if (myTarget.value === null)
           return null;
         let ourProps = {
@@ -908,127 +1071,6 @@
       };
     }
   });
-  let DescriptionContext = Symbol("DescriptionContext");
-  function useDescriptionContext() {
-    let context = vue.inject(DescriptionContext, null);
-    if (context === null) {
-      throw new Error("Missing parent");
-    }
-    return context;
-  }
-  function useDescriptions({
-    slot = vue.ref({}),
-    name = "Description",
-    props = {}
-  } = {}) {
-    let descriptionIds = vue.ref([]);
-    function register(value) {
-      descriptionIds.value.push(value);
-      return () => {
-        let idx = descriptionIds.value.indexOf(value);
-        if (idx === -1)
-          return;
-        descriptionIds.value.splice(idx, 1);
-      };
-    }
-    vue.provide(DescriptionContext, { register, slot, name, props });
-    return vue.computed(
-      () => descriptionIds.value.length > 0 ? descriptionIds.value.join(" ") : void 0
-    );
-  }
-  vue.defineComponent({
-    name: "Description",
-    props: {
-      as: { type: [Object, String], default: "p" },
-      id: { type: String, default: () => `headlessui-description-${useId()}` }
-    },
-    setup(myProps, { attrs, slots }) {
-      let context = useDescriptionContext();
-      vue.onMounted(() => vue.onUnmounted(context.register(myProps.id)));
-      return () => {
-        let { name = "Description", slot = vue.ref({}), props = {} } = context;
-        let { id: id2, ...theirProps } = myProps;
-        let ourProps = {
-          ...Object.entries(props).reduce(
-            (acc, [key, value]) => Object.assign(acc, { [key]: vue.unref(value) }),
-            {}
-          ),
-          id: id2
-        };
-        return render({
-          ourProps,
-          theirProps,
-          slot: slot.value,
-          attrs,
-          slots,
-          name
-        });
-      };
-    }
-  });
-  function useRootContainers({
-    defaultContainers = [],
-    portals,
-    mainTreeNodeRef: _mainTreeNodeRef
-  } = {}) {
-    let mainTreeNodeRef = vue.ref(null);
-    let ownerDocument = getOwnerDocument(mainTreeNodeRef);
-    function resolveContainers() {
-      var _a;
-      let containers = [];
-      for (let container of defaultContainers) {
-        if (container === null)
-          continue;
-        if (container instanceof HTMLElement) {
-          containers.push(container);
-        } else if ("value" in container && container.value instanceof HTMLElement) {
-          containers.push(container.value);
-        }
-      }
-      if (portals == null ? void 0 : portals.value) {
-        for (let portal of portals.value) {
-          containers.push(portal);
-        }
-      }
-      for (let container of (_a = ownerDocument == null ? void 0 : ownerDocument.querySelectorAll("html > *, body > *")) != null ? _a : []) {
-        if (container === document.body)
-          continue;
-        if (container === document.head)
-          continue;
-        if (!(container instanceof HTMLElement))
-          continue;
-        if (container.id === "headlessui-portal-root")
-          continue;
-        if (container.contains(dom(mainTreeNodeRef)))
-          continue;
-        if (containers.some((defaultContainer) => container.contains(defaultContainer)))
-          continue;
-        containers.push(container);
-      }
-      return containers;
-    }
-    return {
-      resolveContainers,
-      contains(element) {
-        return resolveContainers().some((container) => container.contains(element));
-      },
-      mainTreeNodeRef,
-      MainTreeNode() {
-        if (_mainTreeNodeRef != null)
-          return null;
-        return vue.h(Hidden, { features: Features.Hidden, ref: mainTreeNodeRef });
-      }
-    };
-  }
-  function useMainTreeNode() {
-    let mainTreeNodeRef = vue.ref(null);
-    return {
-      mainTreeNodeRef,
-      MainTreeNode() {
-        return vue.h(Hidden, { features: Features.Hidden, ref: mainTreeNodeRef });
-      }
-    };
-  }
   let PopoverContext = Symbol("PopoverContext");
   function usePopoverContext(component) {
     let context = vue.inject(PopoverContext, null);
@@ -1232,15 +1274,17 @@
     props: {
       as: { type: [Object, String], default: "button" },
       disabled: { type: [Boolean], default: false },
-      id: { type: String, default: () => `headlessui-popover-button-${useId()}` }
+      id: { type: String, default: null }
     },
     inheritAttrs: false,
     setup(props, { attrs, slots, expose }) {
+      var _a;
+      let id = (_a = props.id) != null ? _a : `headlessui-popover-button-${useId()}`;
       let api = usePopoverContext("PopoverButton");
       let ownerDocument = vue.computed(() => getOwnerDocument(api.button));
       expose({ el: api.button, $el: api.button });
       vue.onMounted(() => {
-        api.buttonId.value = props.id;
+        api.buttonId.value = id;
       });
       vue.onUnmounted(() => {
         api.buttonId.value = null;
@@ -1255,7 +1299,7 @@
       let sentinelId = `headlessui-focus-sentinel-${useId()}`;
       if (!isWithinPanel.value) {
         vue.watchEffect(() => {
-          api.button.value = elementRef.value;
+          api.button.value = dom(elementRef);
         });
       }
       let type = useResolveButtonType(
@@ -1263,7 +1307,7 @@
         elementRef
       );
       function handleKeyDown(event) {
-        var _a, _b, _c, _d, _e;
+        var _a2, _b, _c, _d, _e;
         if (isWithinPanel.value) {
           if (api.popoverState.value === 1)
             return;
@@ -1271,7 +1315,7 @@
             case Keys.Space:
             case Keys.Enter:
               event.preventDefault();
-              (_b = (_a = event.target).click) == null ? void 0 : _b.call(_a);
+              (_b = (_a2 = event.target).click) == null ? void 0 : _b.call(_a2);
               api.closePopover();
               (_c = dom(api.button)) == null ? void 0 : _c.focus();
               break;
@@ -1308,12 +1352,12 @@
         }
       }
       function handleClick(event) {
-        var _a, _b;
+        var _a2, _b;
         if (props.disabled)
           return;
         if (isWithinPanel.value) {
           api.closePopover();
-          (_a = dom(api.button)) == null ? void 0 : _a.focus();
+          (_a2 = dom(api.button)) == null ? void 0 : _a2.focus();
         } else {
           event.preventDefault();
           event.stopPropagation();
@@ -1355,7 +1399,7 @@
       return () => {
         let visible = api.popoverState.value === 0;
         let slot = { open: visible };
-        let { id: id2, ...theirProps } = props;
+        let { ...theirProps } = props;
         let ourProps = isWithinPanel.value ? {
           ref: elementRef,
           type: type.value,
@@ -1363,7 +1407,7 @@
           onClick: handleClick
         } : {
           ref: elementRef,
-          id: id2,
+          id,
           type: type.value,
           "aria-expanded": api.popoverState.value === 0,
           "aria-controls": dom(api.panel) ? api.panelId.value : void 0,
@@ -1403,7 +1447,7 @@
     },
     setup(props, { attrs, slots }) {
       let api = usePopoverContext("PopoverOverlay");
-      let id2 = `headlessui-popover-overlay-${useId()}`;
+      let id = `headlessui-popover-overlay-${useId()}`;
       let usesOpenClosedState = useOpenClosed();
       let visible = vue.computed(() => {
         if (usesOpenClosedState !== null) {
@@ -1420,7 +1464,7 @@
           /* Open */
         };
         let ourProps = {
-          id: id2,
+          id,
           "aria-hidden": true,
           onClick: handleClick
         };
@@ -1444,10 +1488,12 @@
       static: { type: Boolean, default: false },
       unmount: { type: Boolean, default: true },
       focus: { type: Boolean, default: false },
-      id: { type: String, default: () => `headlessui-popover-panel-${useId()}` }
+      id: { type: String, default: null }
     },
     inheritAttrs: false,
     setup(props, { attrs, slots, expose }) {
+      var _a;
+      let id = (_a = props.id) != null ? _a : `headlessui-popover-panel-${useId()}`;
       let { focus } = props;
       let api = usePopoverContext("PopoverPanel");
       let ownerDocument = vue.computed(() => getOwnerDocument(api.panel));
@@ -1455,21 +1501,21 @@
       let afterPanelSentinelId = `headlessui-focus-sentinel-after-${useId()}`;
       expose({ el: api.panel, $el: api.panel });
       vue.onMounted(() => {
-        api.panelId.value = props.id;
+        api.panelId.value = id;
       });
       vue.onUnmounted(() => {
         api.panelId.value = null;
       });
       vue.provide(PopoverPanelContext, api.panelId);
       vue.watchEffect(() => {
-        var _a, _b;
+        var _a2, _b;
         if (!focus)
           return;
         if (api.popoverState.value !== 0)
           return;
         if (!api.panel)
           return;
-        let activeElement = (_a = ownerDocument.value) == null ? void 0 : _a.activeElement;
+        let activeElement = (_a2 = ownerDocument.value) == null ? void 0 : _a2.activeElement;
         if ((_b = dom(api.panel)) == null ? void 0 : _b.contains(activeElement))
           return;
         focusIn(dom(api.panel), Focus.First);
@@ -1482,14 +1528,14 @@
         return api.popoverState.value === 0;
       });
       function handleKeyDown(event) {
-        var _a, _b;
+        var _a2, _b;
         switch (event.key) {
           case Keys.Escape:
             if (api.popoverState.value !== 0)
               return;
             if (!dom(api.panel))
               return;
-            if (ownerDocument.value && !((_a = dom(api.panel)) == null ? void 0 : _a.contains(ownerDocument.value.activeElement))) {
+            if (ownerDocument.value && !((_a2 = dom(api.panel)) == null ? void 0 : _a2.contains(ownerDocument.value.activeElement))) {
               return;
             }
             event.preventDefault();
@@ -1500,13 +1546,13 @@
         }
       }
       function handleBlur(event) {
-        var _a, _b, _c, _d, _e;
+        var _a2, _b, _c, _d, _e;
         let el = event.relatedTarget;
         if (!el)
           return;
         if (!dom(api.panel))
           return;
-        if ((_a = dom(api.panel)) == null ? void 0 : _a.contains(el))
+        if ((_a2 = dom(api.panel)) == null ? void 0 : _a2.contains(el))
           return;
         api.closePopover();
         if (((_c = (_b = dom(api.beforePanelSentinel)) == null ? void 0 : _b.contains) == null ? void 0 : _c.call(_b, el)) || ((_e = (_d = dom(api.afterPanelSentinel)) == null ? void 0 : _d.contains) == null ? void 0 : _e.call(_d, el))) {
@@ -1521,15 +1567,15 @@
         function run() {
           match(direction.value, {
             [Direction.Forwards]: () => {
-              var _a;
+              var _a2;
               let result = focusIn(el, Focus.First);
               if (result === FocusResult.Error) {
-                (_a = dom(api.afterPanelSentinel)) == null ? void 0 : _a.focus();
+                (_a2 = dom(api.afterPanelSentinel)) == null ? void 0 : _a2.focus();
               }
             },
             [Direction.Backwards]: () => {
-              var _a;
-              (_a = dom(api.button)) == null ? void 0 : _a.focus({ preventScroll: true });
+              var _a2;
+              (_a2 = dom(api.button)) == null ? void 0 : _a2.focus({ preventScroll: true });
             }
           });
         }
@@ -1563,10 +1609,10 @@
               focusIn(combined, Focus.First, { sorted: false });
             },
             [Direction.Backwards]: () => {
-              var _a;
+              var _a2;
               let result = focusIn(el, Focus.Previous);
               if (result === FocusResult.Error) {
-                (_a = dom(api.button)) == null ? void 0 : _a.focus();
+                (_a2 = dom(api.button)) == null ? void 0 : _a2.focus();
               }
             }
           });
@@ -1580,10 +1626,10 @@
           open: api.popoverState.value === 0,
           close: api.close
         };
-        let { id: id2, focus: _focus, ...theirProps } = props;
+        let { focus: _focus, ...theirProps } = props;
         let ourProps = {
           ref: api.panel,
-          id: id2,
+          id,
           onKeydown: handleKeyDown,
           onFocusout: focus && api.popoverState.value === 0 ? handleBlur : void 0,
           tabIndex: -1
@@ -1596,7 +1642,7 @@
           slots: {
             ...slots,
             default: (...args) => {
-              var _a;
+              var _a2;
               return [
                 vue.h(vue.Fragment, [
                   visible.value && api.isPortalled.value && vue.h(Hidden, {
@@ -1608,7 +1654,7 @@
                     type: "button",
                     onFocus: handleBeforeFocus
                   }),
-                  (_a = slots.default) == null ? void 0 : _a.call(slots, ...args),
+                  (_a2 = slots.default) == null ? void 0 : _a2.call(slots, ...args),
                   visible.value && api.isPortalled.value && vue.h(Hidden, {
                     id: afterPanelSentinelId,
                     ref: api.afterPanelSentinel,
@@ -1728,20 +1774,22 @@
     props: {
       as: { type: [Object, String], default: "label" },
       passive: { type: [Boolean], default: false },
-      id: { type: String, default: () => `headlessui-label-${useId()}` }
+      id: { type: String, default: null }
     },
     setup(myProps, { slots, attrs }) {
+      var _a;
+      let id = (_a = myProps.id) != null ? _a : `headlessui-label-${useId()}`;
       let context = useLabelContext();
-      vue.onMounted(() => vue.onUnmounted(context.register(myProps.id)));
+      vue.onMounted(() => vue.onUnmounted(context.register(id)));
       return () => {
         let { name = "Label", slot = {}, props = {} } = context;
-        let { id: id2, passive, ...theirProps } = myProps;
+        let { passive, ...theirProps } = myProps;
         let ourProps = {
           ...Object.entries(props).reduce(
             (acc, [key, value]) => Object.assign(acc, { [key]: vue.unref(value) }),
             {}
           ),
-          id: id2
+          id
         };
         if (passive) {
           delete ourProps["onClick"];
@@ -1801,10 +1849,12 @@
       form: { type: String, optional: true },
       name: { type: String, optional: true },
       value: { type: String, optional: true },
-      id: { type: String, default: () => `headlessui-switch-${useId()}` }
+      id: { type: String, default: null }
     },
     inheritAttrs: false,
     setup(props, { emit, attrs, slots, expose }) {
+      var _a;
+      let id = (_a = props.id) != null ? _a : `headlessui-switch-${useId()}`;
       let api = vue.inject(GroupContext, null);
       let [checked, theirOnChange] = useControllable(
         vue.computed(() => props.modelValue),
@@ -1837,8 +1887,8 @@
         event.preventDefault();
       }
       let form = vue.computed(() => {
-        var _a, _b;
-        return (_b = (_a = dom(switchRef)) == null ? void 0 : _a.closest) == null ? void 0 : _b.call(_a, "form");
+        var _a2, _b;
+        return (_b = (_a2 = dom(switchRef)) == null ? void 0 : _a2.closest) == null ? void 0 : _b.call(_a2, "form");
       });
       vue.onMounted(() => {
         vue.watch(
@@ -1853,18 +1903,18 @@
             }
             form.value.addEventListener("reset", handle);
             return () => {
-              var _a;
-              (_a = form.value) == null ? void 0 : _a.removeEventListener("reset", handle);
+              var _a2;
+              (_a2 = form.value) == null ? void 0 : _a2.removeEventListener("reset", handle);
             };
           },
           { immediate: true }
         );
       });
       return () => {
-        let { id: id2, name, value, form: form2, ...theirProps } = props;
+        let { name, value, form: form2, ...theirProps } = props;
         let slot = { checked: checked.value };
         let ourProps = {
-          id: id2,
+          id,
           ref: switchRef,
           role: "switch",
           type: type.value,
@@ -1925,11 +1975,11 @@
     xmlns: "http://www.w3.org/2000/svg"
   };
   const _hoisted_2$3 = /* @__PURE__ */ vue.createElementVNode("path", {
-    d: "M2.16479 10.0003C2.16479 5.67409 5.6719 2.16699 9.99813 2.16699C14.3244 2.16699 17.8315 5.67409 17.8315 10.0003C17.8315 14.3266 14.3244 17.8337 9.99813 17.8337C5.6719 17.8337 2.16479 14.3266 2.16479 10.0003Z",
-    stroke: "currentColor",
-    "stroke-opacity": "0.16",
-    "stroke-linecap": "round",
-    "stroke-linejoin": "round"
+    "fill-rule": "evenodd",
+    "clip-rule": "evenodd",
+    d: "M10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2ZM0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10Z",
+    fill: "currentColor",
+    opacity: "0.16"
   }, null, -1);
   const _hoisted_3$3 = [
     _hoisted_2$3
@@ -1949,7 +1999,7 @@
   const _hoisted_2$2 = /* @__PURE__ */ vue.createElementVNode("path", {
     "fill-rule": "evenodd",
     "clip-rule": "evenodd",
-    d: "M1.66479 10.0003C1.66479 5.39795 5.39575 1.66699 9.99813 1.66699C14.6005 1.66699 18.3315 5.39795 18.3315 10.0003C18.3315 14.6027 14.6005 18.3337 9.99813 18.3337C5.39575 18.3337 1.66479 14.6027 1.66479 10.0003ZM13.3944 6.61049C13.7708 6.87535 13.8612 7.39518 13.5963 7.77157L9.63797 13.3966C9.49241 13.6034 9.26078 13.733 9.00835 13.7487C8.75591 13.7645 8.50998 13.6647 8.33984 13.4776L6.25651 11.1859C5.94692 10.8453 5.97202 10.3183 6.31257 10.0087C6.65311 9.69912 7.18015 9.72422 7.48974 10.0648L8.87348 11.5869L12.2333 6.81241C12.4982 6.43603 13.018 6.34562 13.3944 6.61049Z",
+    d: "M0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10ZM14.0755 5.93219C14.5272 6.25003 14.6356 6.87383 14.3178 7.32549L9.56781 14.0755C9.39314 14.3237 9.11519 14.4792 8.81226 14.4981C8.50934 14.517 8.21422 14.3973 8.01006 14.1727L5.51006 11.4227C5.13855 11.014 5.16867 10.3816 5.57733 10.0101C5.98598 9.63855 6.61843 9.66867 6.98994 10.0773L8.65042 11.9039L12.6822 6.17451C13 5.72284 13.6238 5.61436 14.0755 5.93219Z",
     fill: "currentColor"
   }, null, -1);
   const _hoisted_3$2 = [
@@ -1959,10 +2009,9 @@
     return vue.openBlock(), vue.createElementBlock("svg", _hoisted_1$2, _hoisted_3$2);
   }
   const CircleCheckIcon = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$1]]);
-  const _hoisted_1$1 = { class: "flex gap-2 m-1.5 rounded p-2.5 text-sm cursor-pointer focus:ring-0 hover:bg-black/5 dark:hover:bg-white/5 radix-disabled:pointer-events-none radix-disabled:opacity-50 group !pr-3 !opacity-100" };
-  const _hoisted_2$1 = { class: "flex grow items-center justify-between gap-2" };
-  const _hoisted_3$1 = { class: "flex items-center gap-3" };
-  const _hoisted_4 = { class: "text-token-text-tertiary" };
+  const _hoisted_1$1 = { class: "flex grow items-center justify-between gap-2" };
+  const _hoisted_2$1 = { class: "flex items-center gap-3" };
+  const _hoisted_3$1 = { class: "text-token-text-tertiary" };
   const _sfc_main$2 = {
     __name: "ModelItem",
     props: {
@@ -1981,19 +2030,21 @@
     },
     setup(__props) {
       return (_ctx, _cache) => {
-        return vue.openBlock(), vue.createElementBlock("div", _hoisted_1$1, [
-          vue.createElementVNode("div", _hoisted_2$1, [
+        return vue.openBlock(), vue.createElementBlock("div", {
+          class: vue.normalizeClass(["flex gap-2 m-1.5 rounded p-2.5 text-sm cursor-pointer focus:ring-0 hover:bg-token-main-surface-secondary radix-disabled:pointer-events-none radix-disabled:opacity-50 group !pr-3", { "!opacity-100": __props.isSelected }])
+        }, [
+          vue.createElementVNode("div", _hoisted_1$1, [
             vue.createElementVNode("div", null, [
-              vue.createElementVNode("div", _hoisted_3$1, [
+              vue.createElementVNode("div", _hoisted_2$1, [
                 vue.createElementVNode("div", null, [
                   vue.createTextVNode(vue.toDisplayString(__props.title) + " ", 1),
-                  vue.createElementVNode("div", _hoisted_4, vue.toDisplayString(__props.description), 1)
+                  vue.createElementVNode("div", _hoisted_3$1, vue.toDisplayString(__props.description), 1)
                 ])
               ])
             ]),
-            (vue.openBlock(), vue.createBlock(vue.resolveDynamicComponent(__props.isSelected ? CircleCheckIcon : CircleIcon), { class: "icon-md block shrink-0" }))
+            (vue.openBlock(), vue.createBlock(vue.resolveDynamicComponent(__props.isSelected ? CircleCheckIcon : CircleIcon), { class: "icon-md flex-shrink-0" }))
           ])
-        ]);
+        ], 2);
       };
     }
   };
@@ -2101,19 +2152,19 @@
           vue.createVNode(vue.unref(Switch), {
             modelValue: vue.unref(state).isEnabled,
             "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => vue.unref(state).isEnabled = $event),
-            class: vue.normalizeClass([vue.unref(state).isEnabled ? "bg-green-600" : "bg-gray-200", "cursor-pointer relative shrink-0 rounded-full h-[20px] w-[32px]"])
+            class: vue.normalizeClass(["cursor-pointer relative shrink-0 rounded-full h-[20px] w-[32px]", vue.unref(state).isEnabled ? "bg-green-600" : "bg-gray-200"])
           }, {
             default: vue.withCtx(() => [
               vue.createElementVNode("span", {
-                style: vue.normalizeStyle(vue.unref(state).isEnabled ? "transform: translateX(14px)" : "transform: translateX(0.125rem)"),
-                class: "flex items-center justify-center rounded-full transition-transform duration-100 will-change-transform bg-white shadow-[0_1px_2px_rgba(0,0,0,0.45)] h-[16px] w-[16px]"
+                class: "flex items-center justify-center rounded-full transition-transform duration-100 will-change-transform bg-white shadow-[0_1px_2px_rgba(0,0,0,0.45)] h-[16px] w-[16px]",
+                style: vue.normalizeStyle(vue.unref(state).isEnabled ? "transform: translateX(14px)" : "transform: translateX(0.125rem)")
               }, null, 4)
             ]),
             _: 1
           }, 8, ["modelValue", "class"]),
           vue.createVNode(vue.unref(Popover), { class: "relative" }, {
             default: vue.withCtx(() => [
-              vue.createVNode(vue.unref(PopoverButton), { class: "group flex cursor-pointer items-center gap-1 rounded-xl py-2 px-3 text-lg font-medium hover:bg-gray-50 radix-state-open:bg-gray-50 dark:hover:bg-black/10 dark:radix-state-open:bg-black/20" }, {
+              vue.createVNode(vue.unref(PopoverButton), { class: "group flex cursor-pointer items-center gap-1 rounded-xl py-2 px-3 text-lg font-medium hover:bg-token-main-surface-secondary" }, {
                 default: vue.withCtx(() => [
                   vue.createTextVNode(" ChatGPT Model Switcher "),
                   vue.createVNode(ChevronDownIcon, { class: "text-token-text-tertiary" })
@@ -2136,7 +2187,7 @@
                 }, {
                   default: vue.withCtx(() => [
                     vue.createVNode(vue.unref(PopoverPanel), {
-                      class: "mt-2 min-w-[340px] max-w-xs overflow-hidden rounded-lg border border-gray-100 bg-token-surface-primary shadow-lg dark:border-gray-700",
+                      class: "popover mt-2 min-w-[340px] max-w-xs overflow-hidden rounded-lg border border-token-border-light bg-token-main-surface-primary shadow-lg",
                       style: vue.normalizeStyle(stylePopoverPanel.value)
                     }, {
                       default: vue.withCtx(() => [
@@ -2175,10 +2226,10 @@
       app = null;
     }
     const rootContainer = document.createElement("div");
-    rootContainer.className = "flex gap-2 pr-1 items-center";
+    rootContainer.className = "flex items-center gap-2";
     rootContainer.id = "chatgpt-model-switcher";
     const wrapper = document.createElement("div");
-    wrapper.className = "flex items-center gap-2";
+    wrapper.className = "flex gap-2 pr-1";
     wrapper.appendChild(rootContainer);
     wrapper.appendChild(mountPoint.removeChild(mountPoint.lastChild));
     mountPoint.appendChild(wrapper);
