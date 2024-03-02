@@ -33,7 +33,11 @@ new MutationObserver((mutations) => {
   for (const mutation of mutations) {
     if (mutation.type === 'childList') {
       const mountPoint = document.querySelector('main div.sticky')
-      if (mountPoint && !document.getElementById('chatgpt-model-switcher')) {
+      if (
+        mountPoint &&
+        Array.from(mountPoint.childNodes).some((child) => child.hasChildNodes()) &&
+        !document.getElementById('chatgpt-model-switcher')
+      ) {
         mountApp(mountPoint)
         break
       }
