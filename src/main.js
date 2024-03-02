@@ -46,8 +46,8 @@ new MutationObserver((mutations) => {
 
 // Start Proxying Fetch Requests
 
-const CONVERSATION_API_URL = 'https://chat.openai.com/backend-api/conversation'
-const MODELS_API_URL = 'https://chat.openai.com/backend-api/models'
+const CONVERSATION_API_URL = '/backend-api/conversation'
+const MODELS_API_URL = '/backend-api/models'
 
 async function handleModelsApi(fetchPromise) {
   return fetchPromise.then(async (response) => {
@@ -64,7 +64,7 @@ window.fetch = new Proxy(window.fetch, {
     let resource = args[0]
     let options = args[1]
 
-    if (state.isEnabled && resource === CONVERSATION_API_URL) {
+    if (state.isEnabled && resource.endsWith(CONVERSATION_API_URL) && options.method === 'POST') {
       const requestBody = JSON.parse(options.body)
       requestBody.model = state.selectedModelSlug
 
@@ -79,7 +79,7 @@ window.fetch = new Proxy(window.fetch, {
 
     const fetchPromise = Reflect.apply(target, that, args)
 
-    if (resource.includes(MODELS_API_URL)) {
+    if (resource.includes(MODELS_API_URL) && options.method === 'GET') {
       return handleModelsApi(fetchPromise)
     }
 
