@@ -72,10 +72,6 @@ window.fetch = new Proxy(window.fetch, {
       const requestBody = JSON.parse(options.body)
       requestBody.model = state.selectedModelSlug
 
-      if (requestBody.model.startsWith('text-davinci-002-render-sha')) {
-        requestBody.arkose_token = null
-      }
-
       options = { ...options, body: JSON.stringify(requestBody) }
       args[0] = resource
       args[1] = options

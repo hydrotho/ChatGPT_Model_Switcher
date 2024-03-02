@@ -24,14 +24,7 @@ const groupedModels = computed(() => {
 })
 
 const selectModel = (slug) => {
-  const isOldGpt4 = state.selectedModelSlug.startsWith('gpt-4')
-  const isNewGpt4 = slug.startsWith('gpt-4')
-
   state.selectedModelSlug = slug
-
-  if (!isOldGpt4 && isNewGpt4) {
-    window.location.href = 'https://chat.openai.com/?model=gpt-4'
-  }
 }
 
 onMounted(async () => {
