@@ -3,7 +3,7 @@
 // @name:zh-CN         ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
 // @name:zh-TW         ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
 // @namespace          https://github.com/hydrotho/ChatGPT_Model_Switcher
-// @version            2.1.0
+// @version            2.2.0
 // @author             Hydrotho
 // @description        Use the GPT-4 Mobile model on the ChatGPT web interface. It also provides the ability to switch to other models for added flexibility. Generally, this script does not conflict with other popular ChatGPT scripts.
 // @description:zh-CN  在 ChatGPT 网页端使用 GPT-4 Mobile 模型。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。
@@ -15,7 +15,7 @@
 // @downloadURL        https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/dist/chatgpt-model-switcher.user.js
 // @updateURL          https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/dist/chatgpt-model-switcher.user.js
 // @match              http*://chat.openai.com/*
-// @require            https://cdn.jsdelivr.net/npm/vue@3.4.19/dist/vue.global.prod.js#sha256-4yDa4p89hBgm4cwPC4fx7t8+QOEjjKFWYp9jpIsCsgM=
+// @require            https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js#sha256-SWMQFEHe1+QgwFZl58YWsvLjhRyZ4c+K+E0p1vEOd9o=
 // @grant              none
 // ==/UserScript==
 
@@ -2132,12 +2132,7 @@
         ].filter((group) => group.length > 0);
       });
       const selectModel = (slug) => {
-        const isOldGpt4 = state.selectedModelSlug.startsWith("gpt-4");
-        const isNewGpt4 = slug.startsWith("gpt-4");
         state.selectedModelSlug = slug;
-        if (!isOldGpt4 && isNewGpt4) {
-          window.location.href = "https://chat.openai.com/?model=gpt-4";
-        }
       };
       vue.onMounted(async () => {
         const rect = anchorPopoverPanel.value.getBoundingClientRect();
@@ -2240,7 +2235,7 @@
     for (const mutation of mutations) {
       if (mutation.type === "childList") {
         const mountPoint = document.querySelector("main div.sticky");
-        if (mountPoint && !document.getElementById("chatgpt-model-switcher")) {
+        if (mountPoint && Array.from(mountPoint.childNodes).some((child) => child.hasChildNodes()) && !document.getElementById("chatgpt-model-switcher")) {
           mountApp(mountPoint);
           break;
         }
@@ -2250,8 +2245,8 @@
     subtree: true,
     childList: true
   });
-  const CONVERSATION_API_URL = "https://chat.openai.com/backend-api/conversation";
-  const MODELS_API_URL = "https://chat.openai.com/backend-api/models";
+  const CONVERSATION_API_URL = "/backend-api/conversation";
+  const MODELS_API_URL = "/backend-api/models";
   async function handleModelsApi(fetchPromise) {
     return fetchPromise.then(async (response) => {
       if (response.ok) {
@@ -2265,18 +2260,15 @@
     apply: async function(target, that, args) {
       let resource = args[0];
       let options = args[1];
-      if (state.isEnabled && resource === CONVERSATION_API_URL) {
+      if (state.isEnabled && resource.endsWith(CONVERSATION_API_URL) && options.method === "POST") {
         const requestBody = JSON.parse(options.body);
         requestBody.model = state.selectedModelSlug;
-        if (requestBody.model.startsWith("text-davinci-002-render-sha")) {
-          requestBody.arkose_token = null;
-        }
         options = { ...options, body: JSON.stringify(requestBody) };
         args[0] = resource;
         args[1] = options;
       }
       const fetchPromise = Reflect.apply(target, that, args);
-      if (resource.includes(MODELS_API_URL)) {
+      if (resource.includes(MODELS_API_URL) && options.method === "GET") {
         return handleModelsApi(fetchPromise);
       }
       return fetchPromise;
