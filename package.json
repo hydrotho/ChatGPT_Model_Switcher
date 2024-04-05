@@ -21,7 +21,7 @@
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.22.0",
     "prettier": "^3.2.5",
-    "vite": "^5.1.4",
+    "vite": "^5.1.7",
     "vite-plugin-monkey": "^3.5.1"
   },
   "packageManager": "pnpm@8.15.0"
