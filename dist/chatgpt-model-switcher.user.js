@@ -15,6 +15,7 @@
 // @downloadURL        https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/dist/chatgpt-model-switcher.user.js
 // @updateURL          https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/dist/chatgpt-model-switcher.user.js
 // @match              http*://chat.openai.com/*
+// @match              http*://chatgpt.com/*
 // @require            https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js#sha256-SWMQFEHe1+QgwFZl58YWsvLjhRyZ4c+K+E0p1vEOd9o=
 // @grant              none
 // ==/UserScript==
