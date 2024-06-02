@@ -3,7 +3,7 @@
 // @name:zh-CN         ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
 // @name:zh-TW         ChatGPT 模型切换器（支持 GPT-4 Mobile 及所有可用模型）
 // @namespace          https://github.com/hydrotho/ChatGPT_Model_Switcher
-// @version            2.3.1
+// @version            2.4.0
 // @author             Hydrotho
 // @description        Use the GPT-4 Mobile model on the ChatGPT web interface. It also provides the ability to switch to other models for added flexibility. Generally, this script does not conflict with other popular ChatGPT scripts.
 // @description:zh-CN  在 ChatGPT 网页端使用 GPT-4 Mobile 模型。同时，它还提供了切换到其他模型的功能，以提供更大的灵活性。一般来说，该脚本不会与其他流行的 ChatGPT 脚本产生冲突。
@@ -16,8 +16,9 @@
 // @updateURL          https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/dist/chatgpt-model-switcher.user.js
 // @match              http*://chat.openai.com/*
 // @match              http*://chatgpt.com/*
-// @require            https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js#sha256-SWMQFEHe1+QgwFZl58YWsvLjhRyZ4c+K+E0p1vEOd9o=
+// @require            https://cdn.jsdelivr.net/npm/vue@3.4.27/dist/vue.global.prod.js#sha256-VMrHpvwhhCKPXCaAPunCoWMozbWKGCjzejy8voYbGOs=
 // @grant              none
+// @run-at             document-start
 // ==/UserScript==
 
 (function (vue) {
@@ -38,12 +39,11 @@
       }
     ];
   }
-  let GENERATE_ID = Symbol("headlessui.useid");
-  let globalId = 0;
+  let id = 0;
+  function generateId() {
+    return ++id;
+  }
   function useId() {
-    let generateId = vue.inject(GENERATE_ID, () => {
-      return `${++globalId}`;
-    });
     return generateId();
   }
   function dom(ref2) {
@@ -352,7 +352,7 @@
         }
       }
       if (
-        // This check alllows us to know whether or not we clicked on a "focusable" element like a
+        // This check allows us to know whether or not we clicked on a "focusable" element like a
         // button or an input. This is a backwards compatibility check so that you can open a <Menu
         // /> and click on another <Menu /> which should close Menu A and open Menu B. We might
         // revisit that so that you will require 2 clicks instead.
@@ -669,6 +669,7 @@
             // @ts-ignore
             (_a = theirProps["aria-hidden"]) != null ? _a : void 0
           ),
+          hidden: (features & 4) === 4 ? true : void 0,
           style: {
             position: "fixed",
             top: 1,
@@ -889,22 +890,20 @@
     name: "Description",
     props: {
       as: { type: [Object, String], default: "p" },
-      id: { type: String, default: null }
+      id: { type: String, default: () => `headlessui-description-${useId()}` }
     },
     setup(myProps, { attrs, slots }) {
-      var _a;
-      let id = (_a = myProps.id) != null ? _a : `headlessui-description-${useId()}`;
       let context = useDescriptionContext();
-      vue.onMounted(() => vue.onUnmounted(context.register(id)));
+      vue.onMounted(() => vue.onUnmounted(context.register(myProps.id)));
       return () => {
         let { name = "Description", slot = vue.ref({}), props = {} } = context;
-        let { ...theirProps } = myProps;
+        let { id: id2, ...theirProps } = myProps;
         let ourProps = {
           ...Object.entries(props).reduce(
             (acc, [key, value]) => Object.assign(acc, { [key]: vue.unref(value) }),
             {}
           ),
-          id
+          id: id2
         };
         return render({
           ourProps,
@@ -1275,17 +1274,15 @@
     props: {
       as: { type: [Object, String], default: "button" },
       disabled: { type: [Boolean], default: false },
-      id: { type: String, default: null }
+      id: { type: String, default: () => `headlessui-popover-button-${useId()}` }
     },
     inheritAttrs: false,
     setup(props, { attrs, slots, expose }) {
-      var _a;
-      let id = (_a = props.id) != null ? _a : `headlessui-popover-button-${useId()}`;
       let api = usePopoverContext("PopoverButton");
       let ownerDocument = vue.computed(() => getOwnerDocument(api.button));
       expose({ el: api.button, $el: api.button });
       vue.onMounted(() => {
-        api.buttonId.value = id;
+        api.buttonId.value = props.id;
       });
       vue.onUnmounted(() => {
         api.buttonId.value = null;
@@ -1308,7 +1305,7 @@
         elementRef
       );
       function handleKeyDown(event) {
-        var _a2, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e;
         if (isWithinPanel.value) {
           if (api.popoverState.value === 1)
             return;
@@ -1316,7 +1313,7 @@
             case Keys.Space:
             case Keys.Enter:
               event.preventDefault();
-              (_b = (_a2 = event.target).click) == null ? void 0 : _b.call(_a2);
+              (_b = (_a = event.target).click) == null ? void 0 : _b.call(_a);
               api.closePopover();
               (_c = dom(api.button)) == null ? void 0 : _c.focus();
               break;
@@ -1353,12 +1350,12 @@
         }
       }
       function handleClick(event) {
-        var _a2, _b;
+        var _a, _b;
         if (props.disabled)
           return;
         if (isWithinPanel.value) {
           api.closePopover();
-          (_a2 = dom(api.button)) == null ? void 0 : _a2.focus();
+          (_a = dom(api.button)) == null ? void 0 : _a.focus();
         } else {
           event.preventDefault();
           event.stopPropagation();
@@ -1400,7 +1397,7 @@
       return () => {
         let visible = api.popoverState.value === 0;
         let slot = { open: visible };
-        let { ...theirProps } = props;
+        let { id: id2, ...theirProps } = props;
         let ourProps = isWithinPanel.value ? {
           ref: elementRef,
           type: type.value,
@@ -1408,7 +1405,7 @@
           onClick: handleClick
         } : {
           ref: elementRef,
-          id,
+          id: id2,
           type: type.value,
           "aria-expanded": api.popoverState.value === 0,
           "aria-controls": dom(api.panel) ? api.panelId.value : void 0,
@@ -1448,7 +1445,7 @@
     },
     setup(props, { attrs, slots }) {
       let api = usePopoverContext("PopoverOverlay");
-      let id = `headlessui-popover-overlay-${useId()}`;
+      let id2 = `headlessui-popover-overlay-${useId()}`;
       let usesOpenClosedState = useOpenClosed();
       let visible = vue.computed(() => {
         if (usesOpenClosedState !== null) {
@@ -1465,7 +1462,7 @@
           /* Open */
         };
         let ourProps = {
-          id,
+          id: id2,
           "aria-hidden": true,
           onClick: handleClick
         };
@@ -1489,12 +1486,10 @@
       static: { type: Boolean, default: false },
       unmount: { type: Boolean, default: true },
       focus: { type: Boolean, default: false },
-      id: { type: String, default: null }
+      id: { type: String, default: () => `headlessui-popover-panel-${useId()}` }
     },
     inheritAttrs: false,
     setup(props, { attrs, slots, expose }) {
-      var _a;
-      let id = (_a = props.id) != null ? _a : `headlessui-popover-panel-${useId()}`;
       let { focus } = props;
       let api = usePopoverContext("PopoverPanel");
       let ownerDocument = vue.computed(() => getOwnerDocument(api.panel));
@@ -1502,21 +1497,21 @@
       let afterPanelSentinelId = `headlessui-focus-sentinel-after-${useId()}`;
       expose({ el: api.panel, $el: api.panel });
       vue.onMounted(() => {
-        api.panelId.value = id;
+        api.panelId.value = props.id;
       });
       vue.onUnmounted(() => {
         api.panelId.value = null;
       });
       vue.provide(PopoverPanelContext, api.panelId);
       vue.watchEffect(() => {
-        var _a2, _b;
+        var _a, _b;
         if (!focus)
           return;
         if (api.popoverState.value !== 0)
           return;
         if (!api.panel)
           return;
-        let activeElement = (_a2 = ownerDocument.value) == null ? void 0 : _a2.activeElement;
+        let activeElement = (_a = ownerDocument.value) == null ? void 0 : _a.activeElement;
         if ((_b = dom(api.panel)) == null ? void 0 : _b.contains(activeElement))
           return;
         focusIn(dom(api.panel), Focus.First);
@@ -1529,14 +1524,14 @@
         return api.popoverState.value === 0;
       });
       function handleKeyDown(event) {
-        var _a2, _b;
+        var _a, _b;
         switch (event.key) {
           case Keys.Escape:
             if (api.popoverState.value !== 0)
               return;
             if (!dom(api.panel))
               return;
-            if (ownerDocument.value && !((_a2 = dom(api.panel)) == null ? void 0 : _a2.contains(ownerDocument.value.activeElement))) {
+            if (ownerDocument.value && !((_a = dom(api.panel)) == null ? void 0 : _a.contains(ownerDocument.value.activeElement))) {
               return;
             }
             event.preventDefault();
@@ -1547,13 +1542,13 @@
         }
       }
       function handleBlur(event) {
-        var _a2, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e;
         let el = event.relatedTarget;
         if (!el)
           return;
         if (!dom(api.panel))
           return;
-        if ((_a2 = dom(api.panel)) == null ? void 0 : _a2.contains(el))
+        if ((_a = dom(api.panel)) == null ? void 0 : _a.contains(el))
           return;
         api.closePopover();
         if (((_c = (_b = dom(api.beforePanelSentinel)) == null ? void 0 : _b.contains) == null ? void 0 : _c.call(_b, el)) || ((_e = (_d = dom(api.afterPanelSentinel)) == null ? void 0 : _d.contains) == null ? void 0 : _e.call(_d, el))) {
@@ -1568,15 +1563,15 @@
         function run() {
           match(direction.value, {
             [Direction.Forwards]: () => {
-              var _a2;
+              var _a;
               let result = focusIn(el, Focus.First);
               if (result === FocusResult.Error) {
-                (_a2 = dom(api.afterPanelSentinel)) == null ? void 0 : _a2.focus();
+                (_a = dom(api.afterPanelSentinel)) == null ? void 0 : _a.focus();
               }
             },
             [Direction.Backwards]: () => {
-              var _a2;
-              (_a2 = dom(api.button)) == null ? void 0 : _a2.focus({ preventScroll: true });
+              var _a;
+              (_a = dom(api.button)) == null ? void 0 : _a.focus({ preventScroll: true });
             }
           });
         }
@@ -1610,10 +1605,10 @@
               focusIn(combined, Focus.First, { sorted: false });
             },
             [Direction.Backwards]: () => {
-              var _a2;
+              var _a;
               let result = focusIn(el, Focus.Previous);
               if (result === FocusResult.Error) {
-                (_a2 = dom(api.button)) == null ? void 0 : _a2.focus();
+                (_a = dom(api.button)) == null ? void 0 : _a.focus();
               }
             }
           });
@@ -1627,10 +1622,10 @@
           open: api.popoverState.value === 0,
           close: api.close
         };
-        let { focus: _focus, ...theirProps } = props;
+        let { id: id2, focus: _focus, ...theirProps } = props;
         let ourProps = {
           ref: api.panel,
-          id,
+          id: id2,
           onKeydown: handleKeyDown,
           onFocusout: focus && api.popoverState.value === 0 ? handleBlur : void 0,
           tabIndex: -1
@@ -1643,7 +1638,7 @@
           slots: {
             ...slots,
             default: (...args) => {
-              var _a2;
+              var _a;
               return [
                 vue.h(vue.Fragment, [
                   visible.value && api.isPortalled.value && vue.h(Hidden, {
@@ -1655,7 +1650,7 @@
                     type: "button",
                     onFocus: handleBeforeFocus
                   }),
-                  (_a2 = slots.default) == null ? void 0 : _a2.call(slots, ...args),
+                  (_a = slots.default) == null ? void 0 : _a.call(slots, ...args),
                   visible.value && api.isPortalled.value && vue.h(Hidden, {
                     id: afterPanelSentinelId,
                     ref: api.afterPanelSentinel,
@@ -1775,22 +1770,20 @@
     props: {
       as: { type: [Object, String], default: "label" },
       passive: { type: [Boolean], default: false },
-      id: { type: String, default: null }
+      id: { type: String, default: () => `headlessui-label-${useId()}` }
     },
     setup(myProps, { slots, attrs }) {
-      var _a;
-      let id = (_a = myProps.id) != null ? _a : `headlessui-label-${useId()}`;
       let context = useLabelContext();
-      vue.onMounted(() => vue.onUnmounted(context.register(id)));
+      vue.onMounted(() => vue.onUnmounted(context.register(myProps.id)));
       return () => {
         let { name = "Label", slot = {}, props = {} } = context;
-        let { passive, ...theirProps } = myProps;
+        let { id: id2, passive, ...theirProps } = myProps;
         let ourProps = {
           ...Object.entries(props).reduce(
             (acc, [key, value]) => Object.assign(acc, { [key]: vue.unref(value) }),
             {}
           ),
-          id
+          id: id2
         };
         if (passive) {
           delete ourProps["onClick"];
@@ -1850,12 +1843,12 @@
       form: { type: String, optional: true },
       name: { type: String, optional: true },
       value: { type: String, optional: true },
-      id: { type: String, default: null }
+      id: { type: String, default: () => `headlessui-switch-${useId()}` },
+      disabled: { type: Boolean, default: false },
+      tabIndex: { type: Number, default: 0 }
     },
     inheritAttrs: false,
     setup(props, { emit, attrs, slots, expose }) {
-      var _a;
-      let id = (_a = props.id) != null ? _a : `headlessui-switch-${useId()}`;
       let api = vue.inject(GroupContext, null);
       let [checked, theirOnChange] = useControllable(
         vue.computed(() => props.modelValue),
@@ -1888,8 +1881,8 @@
         event.preventDefault();
       }
       let form = vue.computed(() => {
-        var _a2, _b;
-        return (_b = (_a2 = dom(switchRef)) == null ? void 0 : _a2.closest) == null ? void 0 : _b.call(_a2, "form");
+        var _a, _b;
+        return (_b = (_a = dom(switchRef)) == null ? void 0 : _a.closest) == null ? void 0 : _b.call(_a, "form");
       });
       vue.onMounted(() => {
         vue.watch(
@@ -1904,22 +1897,22 @@
             }
             form.value.addEventListener("reset", handle);
             return () => {
-              var _a2;
-              (_a2 = form.value) == null ? void 0 : _a2.removeEventListener("reset", handle);
+              var _a;
+              (_a = form.value) == null ? void 0 : _a.removeEventListener("reset", handle);
             };
           },
           { immediate: true }
         );
       });
       return () => {
-        let { name, value, form: form2, ...theirProps } = props;
+        let { id: id2, name, value, form: form2, tabIndex, ...theirProps } = props;
         let slot = { checked: checked.value };
         let ourProps = {
-          id,
+          id: id2,
           ref: switchRef,
           role: "switch",
           type: type.value,
-          tabIndex: 0,
+          tabIndex: tabIndex === -1 ? 0 : tabIndex,
           "aria-checked": checked.value,
           "aria-labelledby": api == null ? void 0 : api.labelledby.value,
           "aria-describedby": api == null ? void 0 : api.describedby.value,
@@ -1938,6 +1931,7 @@
               readOnly: true,
               checked: checked.value,
               form: form2,
+              disabled: theirProps.disabled,
               name,
               value
             })
