@@ -36,6 +36,7 @@ export default defineConfig({
         grant: ['none'],
         author: 'Hydrotho',
         match: ['http*://chat.openai.com/*', 'http*://chatgpt.com/*'],
+        'run-at': 'document-start',
         updateURL:
           'https://raw.githubusercontent.com/hydrotho/ChatGPT_Model_Switcher/main/dist/chatgpt-model-switcher.user.js',
         downloadURL:
